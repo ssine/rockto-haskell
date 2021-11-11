@@ -14,7 +14,7 @@ Game rules:
    - wall, blocks anything
    - scaffold, supports bricks and parcels above
    - exit
-2. Brick falls down if there is nothing supporting, and kills the player on hit
+2. Brick or parcel falls down if there is nothing supporting, and kills the player on hit
 3. Brick can be pushed left or right by player if there is nothing on the other side
 4. Player collects the parcel when their positions overlap
 5. Player destroys the scaffold when their positions overlap
