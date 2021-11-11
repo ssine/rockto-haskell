@@ -2,7 +2,7 @@
 
 A remake of retro chip-8 game *rockto* in terminal with haskell.
 
-![rockto](assets/rockto.gif)
+<img alt="rockto" src="assets/rockto.gif" width="500"/>
 
 The goal is to collect all parcels in the map and get to the exit.
 
