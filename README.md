@@ -2,7 +2,7 @@
 
 A remake of retro chip-8 game *[rockto](https://johnearnest.github.io/chip8Archive/play.html?p=rockto)* in terminal with haskell.
 
-Collaborators: [dofup](https://github.com/dofup), [shijiesun-edu](https://github.com/shijiesun-edu), [ssine](https://github.com/ssine), [ZJHCSE](https://github.com/ZJHCSE).
+Collaborators (in alphabetical order): [dofup](https://github.com/dofup), [shijiesun-edu](https://github.com/shijiesun-edu), [ssine](https://github.com/ssine), [ZJHCSE](https://github.com/ZJHCSE).
 
 <img alt="rockto" src="assets/rockto.gif" width="500"/>
 
