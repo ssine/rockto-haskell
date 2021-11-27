@@ -1,5 +1,6 @@
 module UI where
 
+import Rockto.Types
 import qualified Rockto as R
 
 import Control.Monad (void, forever)
@@ -14,4 +15,8 @@ rocktoApp :: Widget ()
 rocktoApp =
     withBorderStyle unicode $
     borderWithLabel (str R.appName) $
-    (center (str "Left") <+> vBorder <+> center (str "Right"))
+    (center (str . show . getMap $ demoMap) <+> vBorder <+> center (str "Right"))
+
+
+demoMap = Map [[TBrick]]
+-- drawUI :: GSt -> Widget ()
