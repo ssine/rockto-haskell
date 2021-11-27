@@ -21,3 +21,12 @@ Game rules:
 3. Brick can be pushed left or right by player if there is nothing on the other side
 4. Player collects the parcel when their positions overlap
 5. Player destroys the scaffold when their positions overlap
+
+
+Getting Started
+---------------
+
+```
+$ make build
+$ make run
+```
