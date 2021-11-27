@@ -11,12 +11,14 @@ import Brick.Widgets.Center (center)
 import Brick.Widgets.Border (borderWithLabel, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 
-rocktoApp :: Widget ()
-rocktoApp =
-    withBorderStyle unicode $
-    borderWithLabel (str R.appName) $
-    (center (str . show . getMap $ demoMap) <+> vBorder <+> center (str "Right"))
-
-
-demoMap = Map [[TBrick]]
--- drawUI :: GSt -> Widget ()
+drawUI :: GSt -> [ Widget () ]
+drawUI state = [ui]
+  where
+    ui = withBorderStyle unicode $
+         borderWithLabel (str R.appName) $
+         (center (str . show . getMap $ _map state)
+           <+> vBorder
+           <+> center (str $ "Round: " ++ (show . _round $ state)
+                        ++ "\nScore: " ++ (show . _score $ state)
+                        ++ "\nPos: " ++ (show . _pos $ state)
+                      ))
