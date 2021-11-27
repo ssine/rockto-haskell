@@ -1,6 +1,6 @@
 .PHONY: all test clean distclean build run
 
-all: distclean build test
+all: build run
 
 test: clean
 
