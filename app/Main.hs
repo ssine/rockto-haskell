@@ -2,23 +2,24 @@
 
 module Main where
 
-import Rockto.Config (callbackDelayTimeNS, maxGameRound)
+import Rockto.Config (maxGameRound, tickDelayTimeNS)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (..))
 import Rockto.Utils (mkInitS)
 import UI (drawUI)
 
-import Control.Concurrent (threadDelay)
+import Control.Concurrent (forkIO, threadDelay)
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
 
 import qualified Graphics.Vty as V
 import qualified System.Random as R (newStdGen)
 
-import Brick (App (..), AttrMap, BrickEvent (VtyEvent), EventM, Next, attrMap, continue,
+import Brick (App (..), AttrMap, BrickEvent (AppEvent, VtyEvent), EventM, Next, attrMap, continue,
               defaultMain, fg, halt, neverShowCursor, on)
 import Brick.AttrMap (AttrMap, attrMap)
-import Brick.Main (App (..), defaultMain, neverShowCursor)
+import Brick.BChan (newBChan, writeBChan)
+import Brick.Main (App (..), customMain, defaultMain, neverShowCursor)
 import Brick.Util (fg, on)
 
 
@@ -27,19 +28,6 @@ theMap =
   attrMap
     V.defAttr
     [("keyword1", fg V.magenta), ("keyword2", V.white `on` V.blue)]
-
--- Run delayed callback when `stable` of the returned state is `False`
-doTick :: Rockto.Types.Direction -> GSt -> EventM () (Next GSt)
-doTick direction st =
-  let nst = tick direction st
-   in if _stable nst
-        then continue nst
-        else do
-          liftIO (threadDelay callbackDelayTimeNS)
-          doTick DNull nst
-
-doTickNoCallback :: Rockto.Types.Direction -> GSt -> EventM () (Next GSt)
-doTickNoCallback direction st = continue $ tick direction st
 
 newGame :: GSt -> EventM () (Next GSt)
 newGame st
@@ -54,28 +42,33 @@ resetCurrentGame = continue . mkInitS . _seed
 resetGame :: GSt -> EventM () (Next GSt)
 resetGame = resetCurrentGame
 
-handleEvent :: GSt -> BrickEvent () e -> EventM () (Next GSt)
+data EvTick = EvTick
+
+handleEvent :: GSt -> BrickEvent () EvTick -> EventM () (Next GSt)
+handleEvent st@GSt{_stable=False} (AppEvent EvTick)   = continue $ tick DNull st
+handleEvent st (AppEvent EvTick)                      = continue st
 -- Quit
-handleEvent st (VtyEvent (V.EvKey V.KEsc [])) = halt st
-handleEvent st (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt st
+handleEvent st (VtyEvent (V.EvKey V.KEsc []))         = halt st
+handleEvent st (VtyEvent (V.EvKey (V.KChar 'q') []))  = halt st
 -- Reset
-handleEvent st (VtyEvent (V.EvKey (V.KChar '1') [])) = resetCurrentGame st
-handleEvent st (VtyEvent (V.EvKey (V.KChar 'r') [])) = resetCurrentGame st
-handleEvent st (VtyEvent (V.EvKey (V.KChar '2') [])) = resetGame st
-handleEvent st (VtyEvent (V.EvKey (V.KChar 's') [])) = resetGame st
+handleEvent st (VtyEvent (V.EvKey (V.KChar '1') []))  = resetCurrentGame st
+handleEvent st (VtyEvent (V.EvKey (V.KChar 'r') []))  = resetCurrentGame st
+handleEvent st (VtyEvent (V.EvKey (V.KChar '2') []))  = resetGame st
+handleEvent st (VtyEvent (V.EvKey (V.KChar 's') []))  = resetGame st
 -- Current round finished
 handleEvent st@GSt{_finish=True} _ = newGame st
 -- User input
+handleEvent st@GSt{_stable=False} _ = continue st
 handleEvent st (VtyEvent (V.EvKey key [])) =
   case key of
-    V.KUp    -> doTick DUp st
-    V.KDown  -> doTick DDown st
-    V.KLeft  -> doTick DLeft st
-    V.KRight -> doTick DRight st
+    V.KUp    -> continue $ tick DUp st
+    V.KDown  -> continue $ tick DDown st
+    V.KLeft  -> continue $ tick DLeft st
+    V.KRight -> continue $ tick DRight st
     _        -> continue st
 handleEvent st _ = continue st
 
-app :: App GSt e ()
+app :: App GSt EvTick ()
 app =
   App
     { appDraw = drawUI
@@ -87,5 +80,11 @@ app =
 
 main :: IO ()
 main = do
+  chan <- newBChan 10
+  forkIO $ forever $ do
+    writeBChan chan EvTick
+    threadDelay tickDelayTimeNS
+  let buildVty = V.mkVty V.defaultConfig
+  initialVty <- buildVty
   n <- R.newStdGen
-  void $ defaultMain app $ mkInitS n
+  void $ customMain initialVty buildVty (Just chan) app $ mkInitS n
