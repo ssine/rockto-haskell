@@ -6,6 +6,7 @@ move :: Direction -> GSt -> GSt
 move d st = st { _map = nmap
                , _score = nscore
                , _pos = npos
+               , _stable = nstable
                , _round = nround}
   where
     nmap = _map st
@@ -28,6 +29,7 @@ move d st = st { _map = nmap
         xSize = getMapXSize $ _map st
         ySize = getMapYSize $ _map st
     nround = _round st
+    nstable = True
 
 
 getMapYSize :: Map -> Int

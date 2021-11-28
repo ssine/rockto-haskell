@@ -9,6 +9,7 @@ mkInitS seed = GSt { _map = demoMap
                    , _seed  = seed
                    , _score = 0
                    , _round = 1
+                   , _stable = True
                    , _pos = (1, 1)
                    }
 

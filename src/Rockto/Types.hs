@@ -29,6 +29,7 @@ data GSt
         , _seed    :: R.StdGen
         , _score   :: Int
         , _round   :: Int
+        , _stable  :: Bool
 
         -- pos: (x, y)
         -- x: horizontal, y: vertical
