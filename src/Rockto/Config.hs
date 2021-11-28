@@ -4,4 +4,4 @@ appName :: String
 appName = "Rockto"
 
 callbackDelayTimeNS :: Int
-callbackDelayTimeNS = 1000000
+callbackDelayTimeNS = 1000
