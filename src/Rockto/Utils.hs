@@ -19,7 +19,7 @@ demoMap :: Map
 demoMap = Map [[TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall],
   [TWall, TScaffold, TScaffold, TScaffold, TBrick, TScaffold, TScaffold, TParcel, TScaffold, TScaffold, TParcel, TScaffold, TScaffold, TScaffold, TScaffold, TWall],
   [TWall, TWall, TWall, TWall, TBrick, TScaffold, TScaffold, TParcel, TScaffold, TScaffold, TBrick, TScaffold, TScaffold, TScaffold, TScaffold, TWall],
-  [TWall, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TParcel, TScaffold, TScaffold, TEmpty, TScaffold, TWall],
+  [TWall, TScaffold, TEmpty, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TScaffold, TParcel, TScaffold, TScaffold, TEmpty, TScaffold, TWall],
   [TWall, TScaffold, TScaffold, TScaffold, TEmpty, TScaffold, TScaffold, TEmpty, TScaffold, TScaffold, TScaffold, TScaffold, TWall, TWall, TWall, TWall],
   [TWall, TScaffold, TScaffold, TScaffold, TEmpty, TScaffold, TScaffold, TBrick, TScaffold, TScaffold, TEmpty, TScaffold, TScaffold, TScaffold, TScaffold, TWall],
   [TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall]]
