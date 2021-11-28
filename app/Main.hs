@@ -2,6 +2,7 @@
 
 module Main where
 
+import Rockto.Config (callbackDelayTimeMS)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (_stable))
 import Rockto.Utils (mkInitS)
@@ -34,7 +35,7 @@ doTick direction st =
    in if _stable nst
         then continue nst
         else do
-          liftIO (threadDelay 1000000)
+          liftIO (threadDelay callbackDelayTimeMS)
           doTick DNull nst
 
 doTickNoCallback :: Rockto.Types.Direction -> GSt -> EventM () (Next GSt)
