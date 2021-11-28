@@ -6,6 +6,7 @@ import qualified System.Random as R (StdGen)
 
 mkInitS :: R.StdGen -> GSt
 mkInitS seed = GSt { _map = demoMap
+                   , _droppingPositions = []
                    , _seed  = seed
                    , _score = 0
                    , _round = 1
@@ -39,12 +40,12 @@ getTile mp (x, y)
     lenX = getMapXSize mp
     lenY = getMapYSize mp
 
-stepPos :: (Int, Int) -> Direction -> (Int, Int)
-stepPos (x, y) DUp    = (x, y - 1)
-stepPos (x, y) DDown  = (x, y + 1)
-stepPos (x, y) DLeft  = (x - 1, y)
-stepPos (x, y) DRight = (x + 1, y)
-stepPos (x, y) DNull  = (x, y)
+stepPos :: Direction -> (Int, Int) -> (Int, Int)
+stepPos DUp    (x, y) = (x, y - 1)
+stepPos DDown  (x, y) = (x, y + 1)
+stepPos DLeft  (x, y) = (x - 1, y)
+stepPos DRight (x, y) = (x + 1, y)
+stepPos DNull  (x, y) = (x, y)
 
 setList :: [a] -> Int -> a -> [a]
 setList list index element = x ++ element : ys
@@ -58,4 +59,4 @@ setTile mp (x, y) tile
   where
     lenX = getMapXSize mp
     lenY = getMapYSize mp
-    list = getMap demoMap
+    list = getMap mp

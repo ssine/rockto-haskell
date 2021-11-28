@@ -25,13 +25,14 @@ newtype Map
 --------------------------------------------------------------------------------
 
 data GSt
-  = GSt { _map    :: Map
-        , _seed   :: R.StdGen
-        , _score  :: Int
-        , _round  :: Int
-        , _dead   :: Bool
-        , _stable :: Bool
-        , _pos    :: (Int, Int)
+  = GSt { _map               :: Map
+        , _droppingPositions :: [(Int, Int)]
+        , _seed              :: R.StdGen
+        , _score             :: Int
+        , _round             :: Int
+        , _dead              :: Bool
+        , _stable            :: Bool
+        , _pos               :: (Int, Int)
         } deriving (Show)
 
 data Direction
