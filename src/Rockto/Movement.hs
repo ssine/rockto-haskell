@@ -30,8 +30,8 @@ move d st = st { _map = nmap
     nround = _round st
 
 
-getMapXSize :: Map -> Int
-getMapXSize = length . getMap
-
 getMapYSize :: Map -> Int
-getMapYSize = length . head . getMap
+getMapYSize = length . getMap
+
+getMapXSize :: Map -> Int
+getMapXSize = length . head . getMap
