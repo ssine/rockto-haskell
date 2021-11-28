@@ -12,13 +12,13 @@ import Brick.Widgets.Border (borderWithLabel, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 
 drawUI :: GSt -> [ Widget () ]
-drawUI state = [ui]
+drawUI st = [ui]
   where
     ui = withBorderStyle unicode $
          borderWithLabel (str R.appName) $
-         (center (str . show . getMap $ _map state)
+         (center (str . show . getMap $ _map st)
            <+> vBorder
-           <+> center (str $ "Round: " ++ (show . _round $ state)
-                        ++ "\nScore: " ++ (show . _score $ state)
-                        ++ "\nPos: " ++ (show . _pos $ state)
+           <+> center (str $ "Round: " ++ (show . _round $ st)
+                        ++ "\nScore: " ++ (show . _score $ st)
+                        ++ "\nPos: " ++ (show . _pos $ st)
                       ))

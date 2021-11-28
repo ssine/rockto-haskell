@@ -2,30 +2,25 @@
 
 module Main where
 
-import UI
+import UI (drawUI)
 
 import Rockto.Types
 import Rockto.Utils (mkInitS)
+import Rockto.Movement (move)
 
 import qualified System.Random as R (newStdGen)
 import qualified Graphics.Vty as V
 
-import Brick.Main (App(..), defaultMain, resizeOrQuit, neverShowCursor)
+import Brick
+import Brick.Main
+  ( App(..), defaultMain
+  , neverShowCursor
+  )
 import Brick.Util (on, fg)
 import Brick.AttrMap (attrMap, AttrMap)
-import Data.Text.Markup ((@@))
-
 
 import Control.Monad (void, forever)
-import Graphics.Vty as Vty
 
-import Brick (Widget, simpleMain, (<+>), str, withBorderStyle)
-import Brick.Widgets.Center (center)
-import Brick.Widgets.Border (borderWithLabel, vBorder)
-import Brick.Widgets.Border.Style (unicode)
-
--- main :: IO ()
--- main = simpleMain rocktoApp
 
 theMap :: AttrMap
 theMap = attrMap V.defAttr
@@ -33,10 +28,22 @@ theMap = attrMap V.defAttr
     , ("keyword2",      V.white `on` V.blue)
     ]
 
+handleEvent :: GSt -> BrickEvent () e -> EventM () (Next GSt)
+handleEvent st (VtyEvent (V.EvKey key [])) =
+    case key of
+        V.KEsc          -> halt st
+        V.KChar 'q'     -> halt st
+        V.KUp           -> continue $ move DUp st
+        V.KDown           -> continue $ move DDown st
+        V.KLeft           -> continue $ move DLeft st
+        V.KRight           -> continue $ move DRight st
+        _ -> continue st
+handleEvent st _ = continue st
+
 app :: App GSt e ()
 app =
     App { appDraw = drawUI
-        , appHandleEvent = resizeOrQuit
+        , appHandleEvent = handleEvent
         , appAttrMap = const theMap
         , appStartEvent = return
         , appChooseCursor = neverShowCursor

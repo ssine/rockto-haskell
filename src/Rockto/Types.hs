@@ -16,16 +16,25 @@ data Tile
   deriving (Eq, Ord, Enum, Show)
 
 -- not sure any other necessary attributes?
-newtype Map = Map { getMap :: [[Tile]] 
-                  } deriving (Show)
+newtype Map
+  = Map { getMap :: [[Tile]]
+        } deriving (Show)
 
 --------------------------------------------------------------------------------
 -- | Global State
 --------------------------------------------------------------------------------
 
-data GSt = GSt { _map     :: Map
-               , _seed    :: R.StdGen
-               , _score   :: Int
-               , _round   :: Int
-               , _pos     :: (Int, Int)
-               } deriving (Show)
+data GSt
+  = GSt { _map     :: Map
+        , _seed    :: R.StdGen
+        , _score   :: Int
+        , _round   :: Int
+        , _pos     :: (Int, Int)
+        } deriving (Show)
+
+data Direction
+  = DUp
+  | DDown
+  | DLeft
+  | DRight
+  deriving (Eq, Enum, Show)
