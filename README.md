@@ -74,7 +74,7 @@ Rockto
 
 ## Progress
 
-Currently we have made some progress on the project. The overall framework is drafted and the main APIs of the key modules have been designed. Each one of us has a clear understanding of our roles and are working on our corresponding parts. Hopefully we will start testing this week.
+Currently we have made some progress on the project. The overall framework is drafted and the main APIs of the key modules have been designed. Each one of us has a clear understanding of our roles and is working on our corresponding parts. Hopefully we will start testing this week.
 
 We are confident to get things done on time now. Beyond that, we are also thinking about involving more features, like implementing more game functions, improving the program performance through `lens` libraries, and so on.
 
