@@ -7,4 +7,10 @@ import System.IO (hFlush, stdout)
 import Rockto.Types
 
 loadMap :: FilePath -> IO Map
-loadMap = \_ -> return $ Map [[TBrick, TExit], [TWall, TEmpty]]
+loadMap filename = return $ Map [[TBrick, TExit], [TWall, TEmpty]]
+
+-- >>> parseMapString "xxo-"
+-- [TWall,TWall,TParcel,TEmpty]
+
+parseMapString :: String -> [Tile]
+parseMapString str = [TEmpty]
