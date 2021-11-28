@@ -59,11 +59,14 @@ tick direction state
           _pos = nextPos
         }
   | nextTile == TParcel =
-      let newMap = setTile (_map state) nextPos TEmpty
+      let
+        newMap = setTile (_map state) nextPos TEmpty
+        ntarget = _target state - 1
       in
         state {
           _map = newMap,
-          _score = _score state + 1,
+          _target = ntarget,
+          _finish = ntarget == 0,
           _stable = null $ getDropPositions newMap nextPos,
           _pos = nextPos
         }

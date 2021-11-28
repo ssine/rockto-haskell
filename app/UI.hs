@@ -22,11 +22,12 @@ drawUI st = [ui]
          (center (str $ L.intercalate "\n" (map unwords (getMapRepr st)))
            <+> vBorder
            <+> center (str $ "Round: " ++ (show . _round $ st)
-                        ++ "\nScore: " ++ (show . _score $ st)
+                        ++ "\nTarget: " ++ (show . _target $ st)
                         ++ "\nPos: " ++ (show . _pos $ st)
                         ++ "\nDead: " ++ (show . _dead $ st)
                         ++ "\nDropping: " ++ (show . _droppingPositions $ st)
                         ++ "\nStable: " ++ (show . _stable $ st)
+                        ++ "\nFinish: " ++ (show . _finish $ st)
                       ))
 
 getMapRepr :: GSt  -> [[String]]
