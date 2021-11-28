@@ -1,8 +1,8 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Rockto.Tick where
 
 import Rockto.Types
 import Rockto.Utils
+
 
 tick :: Direction -> GSt -> GSt
 
@@ -11,23 +11,27 @@ tick DNull state@GSt{_stable = True} = state
 
 -- steady player, tick time (check for unsupported brick & parcels, player hit detection)
 tick DNull state
-  | null dropPositions = state {_stable = True}
-  | otherwise = foldl handleDroppable state dropPositions
+  | null dropPositions && null (_droppingPositions state) = state {_stable = True}
+  | otherwise =
+      let
+        stAfterDrop = foldl handleDroppable state dropPositions
+        stAfterHit = foldl handleDropping stAfterDrop (_droppingPositions state)
+      in
+        stAfterHit {_droppingPositions = map (stepPos DDown) dropPositions}
   where
-    mp = _map state
-    lenX = getMapXSize mp
-    lenY = getMapYSize mp
-    dropPositions = [(x, y) |
-      x <- [0..10],
-      y <- [0..10],
-      getTile mp (x, y) `elem` [TParcel, TBrick],
-      getTile mp (stepPos (x, y) DDown) == TEmpty ]
-    handleDroppable state' position
-      | newPosition == _pos state' = newState {_dead = True}
-      | otherwise = newState
+    dropPositions = getDropPositions (_map state) (_pos state)
+    handleDroppable state' position = newState
       where
         mp' = _map state'
-        newPosition = stepPos position DDown
+        newPosition = stepPos DDown position
+        tile = getTile mp' position
+        newState = state' {_map = setTile (setTile mp' position TEmpty) newPosition tile}
+    handleDropping state' position
+      | newPosition == _pos state' = newState {_dead = True}
+      | otherwise = state'
+      where
+        mp' = _map state'
+        newPosition = stepPos DDown position
         tile = getTile mp' position
         newState = state' {_map = setTile (setTile mp' position TEmpty) newPosition tile}
 
@@ -37,18 +41,39 @@ tick direction state@GSt{_stable = False} = state
 -- update player only
 tick direction state
   | nextTile `elem` [TBrick, TWall] = state
-  | nextTile `elem` [TScaffold, TEmpty] = state {
-      _map = setTile (_map state) nextPos TEmpty,
-      _stable = False,
-      _pos = nextPos
-    }
-  | nextTile == TParcel = state {
-      _map = setTile (_map state) nextPos TEmpty,
-      _score = _score state + 1,
-      _stable = False,
-      _pos = nextPos
-    }
+  | nextTile `elem` [TScaffold, TEmpty] =
+      let newMap = setTile (_map state) nextPos TEmpty
+      in
+        state {
+          _map = newMap,
+          _stable = null $ getDropPositions newMap nextPos,
+          _pos = nextPos
+        }
+  | nextTile == TParcel =
+      let newMap = setTile (_map state) nextPos TEmpty
+      in
+        state {
+          _map = newMap,
+          _score = _score state + 1,
+          _stable = null $ getDropPositions newMap nextPos,
+          _pos = nextPos
+        }
   | nextTile == TExit = state  -- TODO: use next map
+  | otherwise = state
   where
-    nextPos = stepPos (_pos state) direction
+    nextPos = stepPos direction (_pos state)
     nextTile = getTile (_map state) nextPos
+
+
+getDropPositions :: Map -> (Int, Int) -> [(Int, Int)]
+getDropPositions mp playerPosition =
+  let
+    lenX = getMapXSize mp
+    lenY = getMapYSize mp
+  in
+    [(x, y) |
+      x <- [0..lenX],
+      y <- [0..lenY],
+      getTile mp (x, y) `elem` [TParcel, TBrick],
+      let downPosition = stepPos DDown (x, y)
+      in getTile mp downPosition == TEmpty && downPosition /= playerPosition ]
