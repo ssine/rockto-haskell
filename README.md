@@ -49,15 +49,15 @@ Underneath, we have unified data modeling, type declaration and an assembly of r
 A quick look at the current project layout:
 ```txt
 Rockto
-├── app					-- interaction related logic
-│    ├── Main.hs		-- app definition, event handlers
-│    └── UI.hs			-- rendering logic
-└── src					-- pure processing logic
+├── app                     -- interaction related logic
+│    ├── Main.hs            -- app definition, event handlers
+│    └── UI.hs              -- rendering logic
+└── src                     -- pure processing logic
 |    ├── Rockto
-|    |     ├── Types.hs		-- type declaration
-|    |     ├── Movement.hs	-- state transform
-|    |     ├── Resource.hs	-- load game setting
-|    │     └── Utils.hs		-- helper functions
+|    |     ├── Types.hs     -- type declaration
+|    |     ├── Movement.hs  -- state transform
+|    |     ├── Resource.hs  -- load game setting
+|    │     └── Utils.hs     -- helper functions
 |    └── Rockto.hs
 ├── rockto.cabal
 ...
