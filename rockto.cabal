@@ -16,7 +16,7 @@ library
                       , Rockto.Resource
                       , Rockto.Types
                       , Rockto.Utils
-                      , Rockto.Movement
+                      , Rockto.Tick
     build-depends:      base >=4.14
                       , brick >= 0.65
                       , containers

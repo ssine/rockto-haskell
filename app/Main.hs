@@ -4,9 +4,10 @@ module Main where
 
 import UI (drawUI)
 
-import Rockto.Movement (move)
+import Rockto.Tick (tick)
 import Rockto.Types
 import Rockto.Utils (mkInitS)
+
 
 import qualified Graphics.Vty as V
 import qualified System.Random as R (newStdGen)
@@ -30,10 +31,10 @@ handleEvent st (VtyEvent (V.EvKey key [])) =
     case key of
         V.KEsc      -> halt st
         V.KChar 'q' -> halt st
-        V.KUp       -> continue $ move DUp st
-        V.KDown     -> continue $ move DDown st
-        V.KLeft     -> continue $ move DLeft st
-        V.KRight    -> continue $ move DRight st
+        V.KUp       -> continue $ tick DUp st
+        V.KDown     -> continue $ tick DDown st
+        V.KLeft     -> continue $ tick DLeft st
+        V.KRight    -> continue $ tick DRight st
         _           -> continue st
 handleEvent st _ = continue st
 
