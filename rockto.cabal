@@ -13,7 +13,7 @@ cabal-version:          >=1.10
 
 library
     exposed-modules:    Rockto
-                      , Rockto.FileIO
+                      , Rockto.Resource
                       , Rockto.Types
                       , Rockto.Utils
                       , Rockto.Tick

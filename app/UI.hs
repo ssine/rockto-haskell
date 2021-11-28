@@ -1,17 +1,17 @@
 module UI where
 
-import Rockto.Types
 import qualified Rockto as R
+import Rockto.Types
 
 import qualified Data.List as L
 
-import Control.Monad (void, forever)
+import Control.Monad (forever, void)
 import qualified Graphics.Vty as V
 
-import Brick (Widget, (<+>), str, withBorderStyle)
-import Brick.Widgets.Center (center)
+import Brick (Widget, str, withBorderStyle, (<+>))
 import Brick.Widgets.Border (borderWithLabel, vBorder)
 import Brick.Widgets.Border.Style (unicode)
+import Brick.Widgets.Center (center)
 
 drawUI :: GSt -> [ Widget () ]
 drawUI st = [ui]

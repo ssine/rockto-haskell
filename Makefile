@@ -1,6 +1,12 @@
-.PHONY: all test clean distclean build run
+.PHONY: init style all test clean distclean build run
 
-all: build run
+init:
+	stack install stylish-haskell
+
+all: style build run
+
+style:
+	stylish-haskell -r -i .
 
 test: clean
 
