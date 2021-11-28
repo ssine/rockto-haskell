@@ -13,4 +13,7 @@ mkInitS seed = GSt { _map = demoMap
                    }
 
 demoMap :: Map
-demoMap = Map [[TParcel, TWall], [TScaffold, TEmpty]]
+demoMap = Map [ [TParcel, TWall]
+              , [TScaffold, TEmpty]
+              , [TScaffold, TWall]
+              ]

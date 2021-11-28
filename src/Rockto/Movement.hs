@@ -11,10 +11,27 @@ move d st = st { _map = nmap
     nmap = _map st
     nscore = _score st
     npos
-      | d == DUp = (ox, oy + 1)
-      | d == DDown = (ox, oy - 1)
+      | d == DUp =
+        if oy < ySize - 1
+          then (ox, oy + 1)
+          else originPos
+      | d == DDown =
+        if oy > 0
+          then (ox, oy - 1)
+          else originPos
       | d == DLeft = (ox - 1, oy)
       | d == DRight = (ox + 1, oy)
-      | otherwise = (ox, oy)
-      where (ox, oy) =  _pos st
+      | otherwise = originPos
+      where
+        originPos = _pos st
+        (ox, oy) =  originPos
+        xSize = getMapXSize $ _map st
+        ySize = getMapYSize $ _map st
     nround = _round st
+
+
+getMapXSize :: Map -> Int
+getMapXSize = length . getMap
+
+getMapYSize :: Map -> Int
+getMapYSize = length . head . getMap
