@@ -1,4 +1,4 @@
-module Rockto.FileIO
+module Rockto.Resource
   ( loadMap
   ) where
 
