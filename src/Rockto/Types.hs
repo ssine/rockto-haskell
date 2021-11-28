@@ -43,4 +43,5 @@ data Direction
   | DDown
   | DLeft
   | DRight
+  | DNull
   deriving (Eq, Enum, Show)
