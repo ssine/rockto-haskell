@@ -37,18 +37,18 @@ doTick direction st =
           liftIO (threadDelay 1000000)
           doTick DNull nst
 
-doTickNoDelay :: Rockto.Types.Direction -> GSt -> EventM () (Next GSt)
-doTickNoDelay direction st = continue $ tick direction st
+doTickNoCallback :: Rockto.Types.Direction -> GSt -> EventM () (Next GSt)
+doTickNoCallback direction st = continue $ tick direction st
 
 handleEvent :: GSt -> BrickEvent () e -> EventM () (Next GSt)
 handleEvent st (VtyEvent (V.EvKey key [])) =
   case key of
     V.KEsc      -> halt st
     V.KChar 'q' -> halt st
-    V.KUp       -> doTickNoDelay DUp st
-    V.KDown     -> doTickNoDelay DDown st
-    V.KLeft     -> doTickNoDelay DLeft st
-    V.KRight    -> doTickNoDelay DRight st
+    V.KUp       -> doTickNoCallback DUp st
+    V.KDown     -> doTickNoCallback DDown st
+    V.KLeft     -> doTickNoCallback DLeft st
+    V.KRight    -> doTickNoCallback DRight st
     _           -> continue st
 handleEvent st _ = continue st
 
