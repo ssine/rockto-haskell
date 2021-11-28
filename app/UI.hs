@@ -1,6 +1,6 @@
 module UI where
 
-import qualified Rockto as R
+import Rockto.Config (appName)
 import Rockto.Types
 
 import qualified Data.List as L
@@ -17,7 +17,7 @@ drawUI :: GSt -> [ Widget () ]
 drawUI st = [ui]
   where
     ui = withBorderStyle unicode $
-         borderWithLabel (str R.appName) $
+         borderWithLabel (str appName)
          (center (str
                   . L.intercalate "\n"
                   . map show
