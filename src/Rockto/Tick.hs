@@ -66,11 +66,10 @@ tick direction state
         state {
           _map = newMap,
           _target = ntarget,
-          _finish = ntarget == 0,
           _stable = null $ getDropPositions newMap nextPos,
           _pos = nextPos
         }
-  | nextTile == TExit = state  -- TODO: use next map
+  | nextTile == TExit = state {_finish = _target state == 0}
   | otherwise = state
   where
     nextPos = stepPos direction (_pos state)
