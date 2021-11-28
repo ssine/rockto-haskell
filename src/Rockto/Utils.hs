@@ -1,6 +1,6 @@
 module Rockto.Utils where
 
-import           Rockto.Types
+import Rockto.Types
 
 import qualified System.Random as R (StdGen)
 

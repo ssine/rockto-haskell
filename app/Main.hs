@@ -4,9 +4,9 @@ module Main where
 
 import UI (drawUI)
 
+import Rockto.Tick (tick)
 import Rockto.Types
 import Rockto.Utils (mkInitS)
-import Rockto.Tick (tick)
 
 
 import qualified Graphics.Vty as V
