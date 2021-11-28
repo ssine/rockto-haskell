@@ -4,22 +4,19 @@ module Main where
 
 import UI (drawUI)
 
+import Rockto.Movement (move)
 import Rockto.Types
 import Rockto.Utils (mkInitS)
-import Rockto.Movement (move)
 
-import qualified System.Random as R (newStdGen)
 import qualified Graphics.Vty as V
+import qualified System.Random as R (newStdGen)
 
 import Brick
-import Brick.Main
-  ( App(..), defaultMain
-  , neverShowCursor
-  )
-import Brick.Util (on, fg)
-import Brick.AttrMap (attrMap, AttrMap)
+import Brick.AttrMap (AttrMap, attrMap)
+import Brick.Main (App (..), defaultMain, neverShowCursor)
+import Brick.Util (fg, on)
 
-import Control.Monad (void, forever)
+import Control.Monad (forever, void)
 
 
 theMap :: AttrMap
@@ -31,13 +28,13 @@ theMap = attrMap V.defAttr
 handleEvent :: GSt -> BrickEvent () e -> EventM () (Next GSt)
 handleEvent st (VtyEvent (V.EvKey key [])) =
     case key of
-        V.KEsc          -> halt st
-        V.KChar 'q'     -> halt st
-        V.KUp           -> continue $ move DUp st
-        V.KDown           -> continue $ move DDown st
-        V.KLeft           -> continue $ move DLeft st
-        V.KRight           -> continue $ move DRight st
-        _ -> continue st
+        V.KEsc      -> halt st
+        V.KChar 'q' -> halt st
+        V.KUp       -> continue $ move DUp st
+        V.KDown     -> continue $ move DDown st
+        V.KLeft     -> continue $ move DLeft st
+        V.KRight    -> continue $ move DRight st
+        _           -> continue st
 handleEvent st _ = continue st
 
 app :: App GSt e ()
@@ -52,4 +49,4 @@ app =
 main :: IO ()
 main = do
     n <- R.newStdGen
-    void $ defaultMain app $ mkInitS n 
+    void $ defaultMain app $ mkInitS n

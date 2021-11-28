@@ -1,9 +1,9 @@
 module Rockto where
 
-import Rockto.Types
 import Rockto.FileIO
-import Rockto.Utils
 import Rockto.Movement
+import Rockto.Types
+import Rockto.Utils
 
 appName :: String
 appName = "Rockto"
