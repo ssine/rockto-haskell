@@ -2,6 +2,7 @@ module UI where
 
 import Rockto.Config (appName)
 import Rockto.Types
+import Rockto.Utils
 
 import qualified Data.List as L
 
@@ -18,12 +19,17 @@ drawUI st = [ui]
   where
     ui = withBorderStyle unicode $
          borderWithLabel (str appName)
-         (center (str
-                  . L.intercalate "\n"
-                  . map show
-                  . getMap $ _map st)
+         (center (str $ L.intercalate "\n" (map show (getMapRepr st)))
            <+> vBorder
            <+> center (str $ "Round: " ++ (show . _round $ st)
                         ++ "\nScore: " ++ (show . _score $ st)
                         ++ "\nPos: " ++ (show . _pos $ st)
+                        ++ "\nDead: " ++ (show . _dead $ st)
+                        ++ "\nDropping: " ++ (show . _droppingPositions $ st)
                       ))
+
+getMapRepr :: GSt  -> [[String]]
+getMapRepr st = setList strList y $ setList (strList !! y) x "Player"
+  where
+    strList = map (map show) (getMap (_map st))
+    (x, y) = _pos st

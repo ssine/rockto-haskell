@@ -3,5 +3,5 @@ module Rockto.Config where
 appName :: String
 appName = "Rockto"
 
-callbackDelayTimeMS :: Int
-callbackDelayTimeMS = 1000000
+callbackDelayTimeNS :: Int
+callbackDelayTimeNS = 1000000

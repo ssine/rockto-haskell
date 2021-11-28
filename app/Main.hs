@@ -2,7 +2,7 @@
 
 module Main where
 
-import Rockto.Config (callbackDelayTimeMS)
+import Rockto.Config (callbackDelayTimeNS)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (_stable))
 import Rockto.Utils (mkInitS)
@@ -35,7 +35,7 @@ doTick direction st =
    in if _stable nst
         then continue nst
         else do
-          liftIO (threadDelay callbackDelayTimeMS)
+          liftIO (threadDelay callbackDelayTimeNS)
           doTick DNull nst
 
 doTickNoCallback :: Rockto.Types.Direction -> GSt -> EventM () (Next GSt)
@@ -46,10 +46,10 @@ handleEvent st (VtyEvent (V.EvKey key [])) =
   case key of
     V.KEsc      -> halt st
     V.KChar 'q' -> halt st
-    V.KUp       -> doTickNoCallback DUp st
-    V.KDown     -> doTickNoCallback DDown st
-    V.KLeft     -> doTickNoCallback DLeft st
-    V.KRight    -> doTickNoCallback DRight st
+    V.KUp       -> doTick DUp st
+    V.KDown     -> doTick DDown st
+    V.KLeft     -> doTick DLeft st
+    V.KRight    -> doTick DRight st
     _           -> continue st
 handleEvent st _ = continue st
 

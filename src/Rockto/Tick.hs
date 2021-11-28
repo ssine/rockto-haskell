@@ -2,6 +2,8 @@ module Rockto.Tick where
 
 import Rockto.Types
 import Rockto.Utils
+import qualified Debug.Trace as D
+
 
 tick :: Direction -> GSt -> GSt
 
@@ -10,7 +12,7 @@ tick DNull state@GSt{_stable = True} = state
 
 -- steady player, tick time (check for unsupported brick & parcels, player hit detection)
 tick DNull state
-  | null dropPositions = state {_stable = True}
+  | null dropPositions = state {_stable = True, _droppingPositions = []}
   | otherwise =
       let
         stAfterDrop = foldl handleDroppable state dropPositions
