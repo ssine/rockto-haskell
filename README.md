@@ -55,7 +55,7 @@ Rockto
 └── src                     -- pure processing logic
 |    ├── Rockto
 |    |     ├── Types.hs     -- type declaration
-|    |     ├── Movement.hs  -- state transform
+|    |     ├── Tick.hs      -- state transform
 |    |     ├── Resource.hs  -- load game setting
 |    │     └── Utils.hs     -- helper functions
 |    └── Rockto.hs
