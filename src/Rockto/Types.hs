@@ -31,11 +31,6 @@ data GSt
         , _round  :: Int
         , _dead   :: Bool
         , _stable :: Bool
-
-        -- pos: (x, y)
-        -- x: horizontal, y: vertical
-        -- (0, 0) is the bottom left corner
-        -- so x >= 0 and y >= 0
         , _pos    :: (Int, Int)
         } deriving (Show)
 
