@@ -35,7 +35,7 @@ $ make run
 
 ## Architecture
 
-Our project is developed on top of the `Brick` framework. With it, we only need to care about the main processing logic and display styles.
+Our project is developed on top of the [Brick](https://github.com/jtdaugherty/brick) framework. With it, we only need to care about the main processing logic and display styles.
 
 The implementation is composed of four main components:
 - **Event Handling**: serves as a dispatcher. It calls state transform functions with different parameters according to users' actions. The overall game progress like restarting or quitting is also handled by it.
