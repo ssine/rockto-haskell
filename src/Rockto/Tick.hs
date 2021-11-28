@@ -40,7 +40,16 @@ tick direction state@GSt{_stable = False} = state
 
 -- update player only
 tick direction state
-  | nextTile `elem` [TBrick, TWall] = state
+  | nextTile == TWall = state
+  | direction `elem` [DLeft, DRight] && nextTile == TBrick && nextTile2 == TEmpty =
+      let newMap = setTile (setTile (_map state) nextPos TEmpty) nextPos2 TBrick
+      in
+        state {
+          _map = newMap,
+          _stable = null $ getDropPositions newMap nextPos,
+          _pos = nextPos
+        }
+  | nextTile == TBrick = state
   | nextTile `elem` [TScaffold, TEmpty] =
       let newMap = setTile (_map state) nextPos TEmpty
       in
@@ -63,6 +72,8 @@ tick direction state
   where
     nextPos = stepPos direction (_pos state)
     nextTile = getTile (_map state) nextPos
+    nextPos2 = stepPos direction nextPos
+    nextTile2 = getTile (_map state) nextPos2
 
 
 getDropPositions :: Map -> (Int, Int) -> [(Int, Int)]
