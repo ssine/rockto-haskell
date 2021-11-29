@@ -56,17 +56,20 @@ handleEvent st (VtyEvent (V.EvKey (V.KChar 'r') []))  = resetCurrentGame st
 handleEvent st (VtyEvent (V.EvKey (V.KChar '2') []))  = resetGame st
 handleEvent st (VtyEvent (V.EvKey (V.KChar 's') []))  = resetGame st
 -- Current round finished
-handleEvent st@GSt{_finish=True} _ = newGame st
+handleEvent st@GSt{_finish=True} _                    = newGame st
+-- Skip while unstable
+handleEvent st@GSt{_stable=False} _                   = continue st
+-- Stop response when dead
+handleEvent st@GSt{_dead=True} _                      = continue st
 -- User input
-handleEvent st@GSt{_stable=False} _ = continue st
-handleEvent st (VtyEvent (V.EvKey key [])) =
+handleEvent st (VtyEvent (V.EvKey key []))            =
   case key of
     V.KUp    -> continue $ tick DUp st
     V.KDown  -> continue $ tick DDown st
     V.KLeft  -> continue $ tick DLeft st
     V.KRight -> continue $ tick DRight st
     _        -> continue st
-handleEvent st _ = continue st
+handleEvent st _                                      = continue st
 
 app :: App GSt EvTick ()
 app =
