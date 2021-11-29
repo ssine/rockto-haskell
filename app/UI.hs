@@ -19,7 +19,7 @@ import Brick.Widgets.Border.Style (unicode)
 import qualified Brick.Widgets.Border.Style as BorderS
 import Brick.Widgets.Center (center)
 
-drawUI :: GSt -> [ Widget () ]
+drawUI :: GSt -> [Widget ()]
 drawUI st = [ui]
   where
     ui = withBorderStyle unicode $

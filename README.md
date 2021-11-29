@@ -63,6 +63,17 @@ Rockto
 ...
 ```
 
+Key functions:
+```hs
+handleEvent :: GSt -> BrickEvent () EvTick -> EventM () (Next GSt)
+
+tick :: Direction -> GSt -> GSt
+
+drawUI :: GSt -> [Widget ()]
+
+loadGame :: Int -> IO Round
+```
+
 ## Challenges
 
 1. The user guide of the `Brick` library is quite tedious. We could still not figure out where to start after the first several readings.
