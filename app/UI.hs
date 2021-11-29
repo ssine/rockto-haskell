@@ -9,10 +9,11 @@ import qualified Data.List as L
 import Control.Monad (forever, void)
 import qualified Graphics.Vty as V
 
-import Brick (Widget, str, withBorderStyle, (<+>), (<=>), emptyWidget, padTop, vBox, padRight, padLeft, padTop, padAll, Padding(..))
-import qualified Brick.Widgets.Border.Style as BorderS
-import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder, borderWithLabel)
+import Brick (Padding (..), Widget, emptyWidget, padAll, padLeft, padRight, padTop, str, vBox,
+              withBorderStyle, (<+>), (<=>))
+import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
+import qualified Brick.Widgets.Border.Style as BorderS
 import Brick.Widgets.Center (center)
 
 drawUI :: GSt -> [ Widget () ]
@@ -27,9 +28,9 @@ drawUI st = [ui]
            <+> (drawScore (st)
            <=> hBorder
            <=> drawUsage (st)))
-           
+
 drawScore :: GSt -> Widget ()
-drawScore st = 
+drawScore st =
     withBorderStyle BorderS.unicodeBold
           $ borderWithLabel (str "Score")
           $ center
@@ -50,11 +51,11 @@ drawUsage st =
           ++ "\nRestart:   1 / r"
           ++ "\nQuit:      Esc / q"
           ++ "\nNew Game:  2 / s"
-                      
+
 drawGame :: GSt  -> Widget()
 drawGame st =
   if _dead st
-     then emptyWidget 
+     then emptyWidget
      else center (str $ L.intercalate "\n" (map unwords (getMapRepr st)))
 
 drawGameOver :: Bool -> Widget()
