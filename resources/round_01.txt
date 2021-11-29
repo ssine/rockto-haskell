@@ -1,4 +1,5 @@
-start=(2, 3)
+startX= 2
+startY= 3
 xxxxxxxxxxxxxxxx
 x---o--p--p----x
 xxxxo--p--o----x
