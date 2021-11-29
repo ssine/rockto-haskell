@@ -43,3 +43,13 @@ data Direction
   | DRight
   | DNull
   deriving (Eq, Enum, Show)
+
+--------------------------------------------------------------------------------
+-- | Game Setting
+--------------------------------------------------------------------------------
+
+data Round =
+  Round { _roundMap          :: Map
+       , _roundStartPosition :: (Int, Int)
+       , _roundTargetNum     :: Int
+       }

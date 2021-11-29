@@ -1,3 +1,4 @@
+start=(2, 3)
 xxxxxxxxxxxxxxxx
 x---o--p--p----x
 xxxxo--p--o----x

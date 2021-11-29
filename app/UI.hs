@@ -1,4 +1,7 @@
-module UI where
+module UI
+  ( drawUI
+  )
+where
 
 import Rockto.Config (appName)
 import Rockto.Types
