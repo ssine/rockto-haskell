@@ -6,8 +6,8 @@ appName = "Rockto"
 tickDelayTimeNS :: Int
 tickDelayTimeNS = 150000
 
-maxGameRound :: Int
-maxGameRound = 5
-
 firstRound :: Int
 firstRound = 1
+
+maxRound :: Int
+maxRound = 5

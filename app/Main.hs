@@ -2,71 +2,71 @@
 
 module Main where
 
-import Rockto.Config (firstRound, maxGameRound, tickDelayTimeNS)
+import Rockto.Config (firstRound, maxRound, tickDelayTimeNS)
 import Rockto.Resource (loadGame)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (..))
-import Rockto.Utils (mkInitS)
+import Rockto.Utils (initSt)
 import UI (drawUI)
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
 
-import qualified Graphics.Vty as V
 import qualified System.Random as R (newStdGen)
 
-import Brick (App (..), AttrMap, BrickEvent (AppEvent, VtyEvent), EventM, Next, attrMap, continue,
-              defaultMain, fg, halt, neverShowCursor, on)
-import Brick.AttrMap (AttrMap, attrMap)
+import qualified Graphics.Vty as V
+
+import Brick (BrickEvent (AppEvent, VtyEvent), EventM, Next)
+import Brick.AttrMap (attrMap)
 import Brick.BChan (newBChan, writeBChan)
-import Brick.Main (App (..), customMain, defaultMain, neverShowCursor)
-import Brick.Util (fg, on)
+import Brick.Main (App (..), continue, customMain, halt, neverShowCursor)
 
 
-theMap :: AttrMap
-theMap =
-  attrMap
-    V.defAttr
-    [("keyword1", fg V.magenta), ("keyword2", V.white `on` V.blue)]
+--------------------------------------------------------------------------------
+-- | Game Control Flow
+--------------------------------------------------------------------------------
+
+startGame :: Int -> GSt -> EventM () (Next GSt)
+startGame round st = do
+  game <- liftIO $ loadGame round
+  continue $ initSt game (_seed st)
+
+nextRound :: GSt -> EventM () (Next GSt)
+nextRound st =
+  if round == maxRound
+    then continue st
+    else startGame (round + 1) st
+  where round = _round st
+
+restart :: GSt -> EventM () (Next GSt)
+restart st = startGame (_round st) st
 
 newGame :: GSt -> EventM () (Next GSt)
-newGame st
-  | gameRound == maxGameRound = continue st
-  | otherwise = do
-    let newRound = gameRound + 1
-    game <- liftIO $ loadGame newRound
-    continue $ mkInitS game $ _seed st
-  where gameRound = _round st
+newGame = startGame firstRound
 
-resetCurrentGame :: GSt -> EventM () (Next GSt)
-resetCurrentGame st = do
-  game <- liftIO . loadGame . _round $ st
-  continue $ mkInitS game (_seed st)
-
--- TODO: reset entire game
-resetGame :: GSt -> EventM () (Next GSt)
-resetGame st = do
-  game <- liftIO $ loadGame firstRound
-  continue $ mkInitS game (_seed st)
-
+--------------------------------------------------------------------------------
+-- | Event Handler
+--------------------------------------------------------------------------------
 
 data EvTick = EvTick
 
 handleEvent :: GSt -> BrickEvent () EvTick -> EventM () (Next GSt)
+-- Animation
 handleEvent st@GSt{_stable=False} (AppEvent EvTick)   = continue $ tick DNull st
-handleEvent st@GSt{_finish=True} (AppEvent EvTick)    = newGame st
+-- Next round
+handleEvent st@GSt{_finish=True} (AppEvent EvTick)    = nextRound st
 handleEvent st (AppEvent EvTick)                      = continue st
 -- Quit
 handleEvent st (VtyEvent (V.EvKey V.KEsc []))         = halt st
 handleEvent st (VtyEvent (V.EvKey (V.KChar 'q') []))  = halt st
 -- Reset
-handleEvent st (VtyEvent (V.EvKey (V.KChar '1') []))  = resetCurrentGame st
-handleEvent st (VtyEvent (V.EvKey (V.KChar 'r') []))  = resetCurrentGame st
-handleEvent st (VtyEvent (V.EvKey (V.KChar '2') []))  = resetGame st
-handleEvent st (VtyEvent (V.EvKey (V.KChar 's') []))  = resetGame st
--- Current round finished
-handleEvent st@GSt{_finish=True} _                    = newGame st
+handleEvent st (VtyEvent (V.EvKey (V.KChar '1') []))  = restart st
+handleEvent st (VtyEvent (V.EvKey (V.KChar 'r') []))  = restart st
+handleEvent st (VtyEvent (V.EvKey (V.KChar '2') []))  = newGame st
+handleEvent st (VtyEvent (V.EvKey (V.KChar 's') []))  = newGame st
+-- Next round
+handleEvent st@GSt{_finish=True} _                    = nextRound st
 -- Skip while unstable
 handleEvent st@GSt{_stable=False} _                   = continue st
 -- Stop response when dead
@@ -81,12 +81,16 @@ handleEvent st (VtyEvent (V.EvKey key []))            =
     _        -> continue st
 handleEvent st _                                      = continue st
 
+--------------------------------------------------------------------------------
+-- | Application and Entry Point
+--------------------------------------------------------------------------------
+
 app :: App GSt EvTick ()
 app =
   App
     { appDraw = drawUI
     , appHandleEvent = handleEvent
-    , appAttrMap = const theMap
+    , appAttrMap = const $ attrMap V.defAttr []
     , appStartEvent = return
     , appChooseCursor = neverShowCursor
     }
@@ -101,4 +105,4 @@ main = do
   initialVty <- buildVty
   n <- R.newStdGen
   game <- loadGame firstRound
-  void $ customMain initialVty buildVty (Just chan) app $ mkInitS game n
+  void $ customMain initialVty buildVty (Just chan) app $ initSt game n
