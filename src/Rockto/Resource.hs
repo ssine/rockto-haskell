@@ -27,17 +27,18 @@ findPos c str width = (rem, ans)
     ans = index `div` width
     rem = index `mod` width
 
-loadGame :: Int -> IO Round
+loadGame :: Int -> IO Game
 loadGame round = do
   mapInfo <- loadMap $ getFileName round
   let roundMap = fst mapInfo
       startPos = snd mapInfo
       targetNum = countTarget roundMap
   return
-    Round
-      { _roundMap = roundMap,
-        _roundStartPosition = startPos,
-        _roundTargetNum = targetNum
+    Game
+      { _gameRound = round
+      , _roundMap = roundMap
+      , _roundStartPosition = startPos
+      , _roundTargetNum = targetNum
       }
 
 getFileName :: Int -> FilePath

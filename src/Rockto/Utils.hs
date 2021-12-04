@@ -4,17 +4,17 @@ import Rockto.Types
 
 import qualified System.Random as R (StdGen)
 
-mkInitS :: R.StdGen -> GSt
-mkInitS seed = GSt { _map = demoMap
-                   , _droppingPositions = []
-                   , _seed  = seed
-                   , _target = 4
-                   , _round = 1
-                   , _dead = False
-                   , _stable = True
-                   , _finish = False
-                   , _pos = (2, 3)
-                   }
+mkInitS :: Game -> R.StdGen -> GSt
+mkInitS game seed = GSt { _map = _roundMap game
+                        , _droppingPositions = []
+                        , _seed  = seed
+                        , _target = _roundTargetNum game
+                        , _round = _gameRound game
+                        , _dead = False
+                        , _stable = True
+                        , _finish = False
+                        , _pos = _roundStartPosition game
+                        }
 
 demoMap :: Map
 demoMap = Map [[TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall, TWall],

@@ -2,7 +2,8 @@
 
 module Main where
 
-import Rockto.Config (maxGameRound, tickDelayTimeNS)
+import Rockto.Config (firstRound, maxGameRound, tickDelayTimeNS)
+import Rockto.Resource (loadGame)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (..))
 import Rockto.Utils (mkInitS)
@@ -32,20 +33,29 @@ theMap =
 newGame :: GSt -> EventM () (Next GSt)
 newGame st
   | gameRound == maxGameRound = continue st
-  | otherwise = continue st{_round = gameRound + 1}
+  | otherwise = do
+    let newRound = gameRound + 1
+    game <- liftIO $ loadGame newRound
+    continue $ mkInitS game $ _seed st
   where gameRound = _round st
 
 resetCurrentGame :: GSt -> EventM () (Next GSt)
-resetCurrentGame = continue . mkInitS . _seed
+resetCurrentGame st = do
+  game <- liftIO . loadGame . _round $ st
+  continue $ mkInitS game (_seed st)
 
 -- TODO: reset entire game
 resetGame :: GSt -> EventM () (Next GSt)
-resetGame = resetCurrentGame
+resetGame st = do
+  game <- liftIO $ loadGame firstRound
+  continue $ mkInitS game (_seed st)
+
 
 data EvTick = EvTick
 
 handleEvent :: GSt -> BrickEvent () EvTick -> EventM () (Next GSt)
 handleEvent st@GSt{_stable=False} (AppEvent EvTick)   = continue $ tick DNull st
+handleEvent st@GSt{_finish=True} (AppEvent EvTick)    = newGame st
 handleEvent st (AppEvent EvTick)                      = continue st
 -- Quit
 handleEvent st (VtyEvent (V.EvKey V.KEsc []))         = halt st
@@ -90,4 +100,5 @@ main = do
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
   n <- R.newStdGen
-  void $ customMain initialVty buildVty (Just chan) app $ mkInitS n
+  game <- loadGame firstRound
+  void $ customMain initialVty buildVty (Just chan) app $ mkInitS game n

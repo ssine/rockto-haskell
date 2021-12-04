@@ -48,8 +48,9 @@ data Direction
 -- | Game Setting
 --------------------------------------------------------------------------------
 
-data Round =
-  Round { _roundMap          :: Map
+data Game =
+  Game { _gameRound          :: Int
+       , _roundMap           :: Map
        , _roundStartPosition :: (Int, Int)
        , _roundTargetNum     :: Int
        }
