@@ -30,7 +30,9 @@ executable rockto
     hs-source-dirs:     app
     main-is:            Main.hs
     other-modules:      UI
-    ghc-options:        -threaded
+    ghc-options:        -threaded -static -O2 -optl-fuse-ld=bfd
+    cc-options:         -static
+    ld-options:         -static -pthread
     build-depends:      base
                       , brick
                       , containers
