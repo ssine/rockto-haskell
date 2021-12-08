@@ -34,20 +34,15 @@ drawScore st = str $ "Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show 
 
 drawUsage :: GSt -> Widget ()
 drawUsage st =
-    withBorderStyle BorderS.unicodeBold
-    $ borderWithLabel (str "Usage")
-    $ center
-    $ str $  "\nMove:      ↑ ↓ ← →"
-          ++ "\nRestart:   1 / r"
-          ++ "\nQuit:      Esc / q"
-          ++ "\nNew Game:  2 / s"
+  withBorderStyle BorderS.unicodeBold
+  $ borderWithLabel (str "Usage")
+  $ center wUsage
 
 drawGame :: GSt  -> Widget()
 drawGame st =
   if _dead st
     then emptyWidget
-  else
-    withBorderStyle BorderS.unicodeBold $ center $ vBox r
+    else withBorderStyle BorderS.unicodeBold $ center $ vBox r
       where
         r = [hBox $ cells r | r <- [0..6]]
         cells y = [if a == x && b == y then showGrid TPlayer else showGrid (getMap (_map st) !! y !! x) | x <- [0..15]]
@@ -85,6 +80,12 @@ uiAttrMap :: AttrMap
 uiAttrMap = attrMap V.defAttr
   [ (goAttr, fg V.red)
   ]
+
+wUsage    :: Widget ()
+wUsage    = str $ "\nMove:      ↑ ↓ ← →"
+               ++ "\nRestart:   1 / r"
+               ++ "\nQuit:      Esc / q"
+               ++ "\nNew Game:  2 / s"
 
 wGameOver :: Widget ()
 wGameOver = str $ "\n  █████▀██████████████████████████████████████████████"
