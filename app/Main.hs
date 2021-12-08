@@ -51,7 +51,7 @@ newGame = startGame firstRound
 data EvTick = EvTick
 
 handleEvent :: GSt -> BrickEvent () EvTick -> EventM () (Next GSt)
--- Animation
+-- Animation: send DNull for next frame calculation till stable
 handleEvent st@GSt{_stable=False} (AppEvent EvTick)   = continue $ tick DNull st
 -- Next round
 handleEvent st@GSt{_finish=True} (AppEvent EvTick)    = nextRound st
@@ -96,8 +96,10 @@ app =
 
 main :: IO ()
 main = do
+  -- create a channel for extra event input
   chan <- newBChan 10
   forkIO $ forever $ do
+    -- periodically send TvTick event
     writeBChan chan EvTick
     threadDelay tickDelayTimeNS
   let buildVty = V.mkVty V.defaultConfig

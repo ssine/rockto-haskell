@@ -1,7 +1,4 @@
-module Rockto.Resource
-  ( loadGame,
-  )
-where
+module Rockto.Resource where
 
 import Data.Char (isDigit)
 import Data.List (elemIndex, intersect)
