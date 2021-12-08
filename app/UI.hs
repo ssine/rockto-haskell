@@ -2,7 +2,7 @@
 
 module UI
   ( drawUI
-  , theMap
+  , uiAttrMap
   )
 where
 
@@ -25,9 +25,7 @@ drawUI st = [ui]
   where
     ui = withBorderStyle unicode $
          borderWithLabel (str appName)
-         (vBox[drawGame st
-                      , padTop (Pad 2) $ drawGameOver (_dead st)
-         ]
+         (vBox [drawGame st, padTop (Pad 2) $ drawGameOver (_dead st)]
           <=> hBorder
           <=> drawScore st)
 
@@ -45,103 +43,100 @@ drawUsage st =
           ++ "\nNew Game:  2 / s"
 
 drawGame :: GSt  -> Widget()
-drawGame g =
-  if _dead g
+drawGame st =
+  if _dead st
     then emptyWidget
   else
-  withBorderStyle BorderS.unicodeBold
-  $ center
-  $ vBox r
-  where
-    r = [hBox $ cells r | r <- [0..6]]
-    cells y = [if a == x && b == y then showGrid TPlayer else drPos (getMap (_map g) !! y !! x) | x <- [0..15]]
-    drPos    = showGrid
-    (a, b) = _pos g
+    withBorderStyle BorderS.unicodeBold $ center $ vBox r
+      where
+        r = [hBox $ cells r | r <- [0..6]]
+        cells y = [if a == x && b == y then showGrid TPlayer else showGrid (getMap (_map st) !! y !! x) | x <- [0..15]]
+        (a, b) = _pos st
 
 
 drawGameOver :: Bool -> Widget()
 drawGameOver dead =
   if dead
-    then withAttr goAttr $ center $ str $ "\n  █████▀██████████████████████████████████████████████"
-                    ++   "\n  █─▄▄▄▄██▀▄─██▄─▀█▀─▄█▄─▄▄─███─▄▄─█▄─█─▄█▄─▄▄─█▄─▄▄▀█"
-                    ++   "\n  █─██▄─██─▀─███─█▄█─███─▄█▀███─██─██▄▀▄███─▄█▀██─▄─▄█"
-                    ++   "\n  ▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▄▄▄▄▀▀▀▄▀▀▀▄▄▄▄▄▀▄▄▀▄▄▀"
-                    ++   "\n              Press 2 to restart                      "
-
+    then withAttr goAttr $ center wGameOver
     else emptyWidget
 
-data Cell = Exit | Wall | Scaffold | Parcel | Brick | Empty | Lambda
-
 showGrid :: Tile -> Widget()
-showGrid TExit     = withAttr exitAttr cw
-showGrid TWall     = withAttr wallAttr wall
-showGrid TScaffold = withAttr scaffoldAttr sc
-showGrid TParcel   = withAttr parcelAttr parcel
-showGrid TBrick    = withAttr brickAttr br
-showGrid TPlayer   = withAttr lambdaAttr lam
-showGrid TEmpty    = withAttr emptyAttr emp
-
-cw :: Widget ()
-cw = str $ "\n░░░░░░░░░░"
-        ++ "\n░░██████░░"
-        ++ "\n░░█░░░░░░░"
-        ++ "\n░░██████░░"
-       ++  "\n░░░░░░░░░░"
-
-wall :: Widget ()
-wall = str $ "\n─────────█"
-      ++   "\n█▄█▄█▄█▄█▐"
-      ++   "\n███┼█████▐"
-      ++   "\n█████████▐"
-
-parcel :: Widget ()
-parcel = str $ "\n░░█████╗░░"
-          ++   "\n░██╔══██╗░"
-          ++   "\n░███████║░"
-          ++   "\n░██║░░██║░"
-          ++   "\n░╚█████╔╝░"
-
-br :: Widget ()
-br = str $ "\n░░█████╗░░"
-      ++   "\n░███████╗░"
-      ++   "\n░███████║░"
-      ++   "\n░███████║░"
-      ++   "\n░╚█████╔╝░"
-
-sc :: Widget ()
-sc = str $ "\n░░░░░░░░░░"
-        ++   "\n░░░░░░░░░░"
-        ++   "\n░░░░░░░░░░"
-        ++   "\n░░░░░░░░░░"
-        ++   "\n░░░░░░░░░░"
-
-lam :: Widget ()
-lam = str $  "\n────██────"
-        ++   "\n──▄▀█▄▄▄──"
-        ++   "\n▄▀──█▄▄───"
-        ++   "\n─▄▄▄▀──▀▄─"
-        ++   "\n─▀───────▀"
-
-emp :: Widget()
-emp = str $  "\n          "
-        ++   "\n          "
-        ++   "\n          "
-        ++   "\n          "
-        ++   "\n          "
+showGrid TExit     = withAttr exitAttr wExit
+showGrid TWall     = withAttr wallAttr wWall
+showGrid TScaffold = withAttr scaffoldAttr wScaffold
+showGrid TParcel   = withAttr parcelAttr wParcel
+showGrid TBrick    = withAttr brickAttr wBrick
+showGrid TPlayer   = withAttr playerAttr wPlayer
+showGrid TEmpty    = withAttr emptyAttr wEmpty
 
 goAttr :: AttrName
 goAttr = "over"
 
-exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, brickAttr, lambdaAttr :: AttrName
+exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, brickAttr, playerAttr :: AttrName
 exitAttr  = "exit"
 wallAttr = "wall"
 scaffoldAttr = "scaffold"
 parcelAttr = "parcel"
 brickAttr = "brick"
 emptyAttr = "empty"
-lambdaAttr = "lambda"
+playerAttr = "player"
 
-theMap :: AttrMap
-theMap = attrMap V.defAttr
+uiAttrMap :: AttrMap
+uiAttrMap = attrMap V.defAttr
   [ (goAttr, fg V.red)
   ]
+
+wGameOver :: Widget ()
+wGameOver = str $ "\n  █████▀██████████████████████████████████████████████"
+               ++ "\n  █─▄▄▄▄██▀▄─██▄─▀█▀─▄█▄─▄▄─███─▄▄─█▄─█─▄█▄─▄▄─█▄─▄▄▀█"
+               ++ "\n  █─██▄─██─▀─███─█▄█─███─▄█▀███─██─██▄▀▄███─▄█▀██─▄─▄█"
+               ++ "\n  ▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▄▄▄▄▀▀▀▄▀▀▀▄▄▄▄▄▀▄▄▀▄▄▀"
+               ++ "\n              Press 2 to restart                      "
+
+wExit     :: Widget ()
+wExit     = str $ "\n░░░░░░░░░░"
+               ++ "\n░░██████░░"
+               ++ "\n░░█░░░░░░░"
+               ++ "\n░░██████░░"
+               ++ "\n░░░░░░░░░░"
+
+wWall     :: Widget ()
+wWall     = str $ "\n─────────█"
+               ++ "\n█▄█▄█▄█▄█▐"
+               ++ "\n███┼█████▐"
+               ++ "\n█████████▐"
+
+wParcel   :: Widget ()
+wParcel   = str $ "\n░░█████╗░░"
+               ++ "\n░██╔══██╗░"
+               ++ "\n░███████║░"
+               ++ "\n░██║░░██║░"
+               ++ "\n░╚█████╔╝░"
+
+wBrick    :: Widget ()
+wBrick    = str $ "\n░░█████╗░░"
+               ++ "\n░███████╗░"
+               ++ "\n░███████║░"
+               ++ "\n░███████║░"
+               ++ "\n░╚█████╔╝░"
+
+wScaffold :: Widget ()
+wScaffold = str $ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+
+wPlayer   :: Widget ()
+wPlayer   = str $ "\n────██────"
+               ++ "\n──▄▀█▄▄▄──"
+               ++ "\n▄▀──█▄▄───"
+               ++ "\n─▄▄▄▀──▀▄─"
+               ++ "\n─▀───────▀"
+
+wEmpty    :: Widget()
+wEmpty    = str $ "\n          "
+               ++ "\n          "
+               ++ "\n          "
+               ++ "\n          "
+               ++ "\n          "

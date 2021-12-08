@@ -7,7 +7,7 @@ import Rockto.Resource (loadGame)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (..))
 import Rockto.Utils (initSt)
-import UI (drawUI, theMap)
+import UI (drawUI, uiAttrMap)
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Monad (forever, void)
@@ -89,7 +89,7 @@ app =
   App
     { appDraw = drawUI
     , appHandleEvent = handleEvent
-    , appAttrMap = const theMap
+    , appAttrMap = const uiAttrMap
     , appStartEvent = return
     , appChooseCursor = neverShowCursor
     }
