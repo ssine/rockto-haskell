@@ -1,6 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module UI where
+module UI
+  ( drawUI
+  , theMap
+  )
+where
 
 import Rockto.Config (appName)
 import Rockto.Types (Direction (..), GSt (..), Tile (..), getMap)
@@ -14,8 +18,7 @@ import Brick.Widgets.Border.Style (unicode)
 import qualified Brick.Widgets.Border.Style as BorderS
 import Brick.Widgets.Center (center)
 
-
-drawUI :: GSt -> [ Widget () ]
+drawUI :: GSt -> [Widget ()]
 drawUI st = [ui]
   where
     ui = withBorderStyle unicode $
@@ -39,7 +42,6 @@ drawUsage st =
           ++ "\nQuit:      Esc / q"
           ++ "\nNew Game:  2 / s"
 
-
 drawGame :: GSt  -> Widget()
 drawGame g =
   if _dead g
@@ -62,7 +64,6 @@ drawGame g =
       | otherwise = Empty
 
 data Cell = Exit | Wall | Scaffold | Parcel | Brick | Empty | Lambda
-
 
 drawGameOver :: Bool -> Widget()
 drawGameOver dead =

@@ -43,3 +43,14 @@ data Direction
   | DRight
   | DNull
   deriving (Eq, Enum, Show)
+
+--------------------------------------------------------------------------------
+-- | Game Setting
+--------------------------------------------------------------------------------
+
+data Game =
+  Game { _gameRound     :: Int
+       , _gameMap       :: Map
+       , _gameStartPos  :: (Int, Int)
+       , _gameTargetNum :: Int
+       }
