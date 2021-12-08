@@ -7,16 +7,18 @@ module UI
 where
 
 import Rockto.Config (appName)
-import Rockto.Types (Direction (..), GSt (..), Tile (..), getMap)
+import Rockto.Types (GSt (..), Map (getMap), Tile (..))
 
 import qualified Graphics.Vty as V
 
-import Brick (App (..), AttrMap, AttrName, Padding (..), Widget, attrMap, emptyWidget, fg, hBox, on,
-              padAll, padLeft, padRight, padTop, str, vBox, withAttr, withBorderStyle, (<+>), (<=>))
+import Brick (Padding (Pad), Widget, fg)
+import Brick.AttrMap (AttrMap, AttrName, attrMap)
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 import qualified Brick.Widgets.Border.Style as BorderS
 import Brick.Widgets.Center (center)
+import Brick.Widgets.Core (emptyWidget, hBox, padTop, str, vBox, withAttr, withBorderStyle, (<+>),
+                           (<=>))
 
 drawUI :: GSt -> [Widget ()]
 drawUI st = [ui]
@@ -52,38 +54,32 @@ drawGame g =
   $ vBox r
   where
     r = [hBox $ cells r | r <- [0..6]]
-    cells y = [if a == x && b == y then showGrid Lambda else drPos (getMap (_map g) !! y !! x) | x <- [0..15]]
-    drPos    = showGrid . cellAt
+    cells y = [if a == x && b == y then showGrid TPlayer else drPos (getMap (_map g) !! y !! x) | x <- [0..15]]
+    drPos    = showGrid
     (a, b) = _pos g
-    cellAt n
-      | n == TExit  = Exit
-      | n ==  TWall = Wall
-      | n ==  TBrick = Brick
-      | n ==  TParcel = Parcel
-      | n ==  TScaffold = Scaffold
-      | otherwise = Empty
 
-data Cell = Exit | Wall | Scaffold | Parcel | Brick | Empty | Lambda
 
 drawGameOver :: Bool -> Widget()
 drawGameOver dead =
   if dead
-    then withAttr goAttr $center $ str $ "\n  █████▀██████████████████████████████████████████████"
+    then withAttr goAttr $ center $ str $ "\n  █████▀██████████████████████████████████████████████"
                     ++   "\n  █─▄▄▄▄██▀▄─██▄─▀█▀─▄█▄─▄▄─███─▄▄─█▄─█─▄█▄─▄▄─█▄─▄▄▀█"
                     ++   "\n  █─██▄─██─▀─███─█▄█─███─▄█▀███─██─██▄▀▄███─▄█▀██─▄─▄█"
                     ++   "\n  ▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▄▄▄▄▀▀▀▄▀▀▀▄▄▄▄▄▀▄▄▀▄▄▀"
                     ++   "\n              Press 2 to restart                      "
 
-     else emptyWidget
+    else emptyWidget
 
-showGrid :: Cell -> Widget()
-showGrid Exit     = withAttr exitAttr cw
-showGrid Wall     = withAttr wallAttr wall
-showGrid Scaffold = withAttr scaffoldAttr sc
-showGrid Parcel   = withAttr parcelAttr parcel
-showGrid Brick    = withAttr brickAttr br
-showGrid Lambda   = withAttr lambdaAttr lam
-showGrid Empty    = withAttr emptyAttr emp
+data Cell = Exit | Wall | Scaffold | Parcel | Brick | Empty | Lambda
+
+showGrid :: Tile -> Widget()
+showGrid TExit     = withAttr exitAttr cw
+showGrid TWall     = withAttr wallAttr wall
+showGrid TScaffold = withAttr scaffoldAttr sc
+showGrid TParcel   = withAttr parcelAttr parcel
+showGrid TBrick    = withAttr brickAttr br
+showGrid TPlayer   = withAttr lambdaAttr lam
+showGrid TEmpty    = withAttr emptyAttr emp
 
 cw :: Widget ()
 cw = str $ "\n░░░░░░░░░░"
