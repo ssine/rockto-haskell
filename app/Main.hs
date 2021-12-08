@@ -7,7 +7,7 @@ import Rockto.Resource (loadGame)
 import Rockto.Tick (tick)
 import Rockto.Types (Direction (..), GSt (..))
 import Rockto.Utils (initSt)
-import UI (drawUI)
+import UI (drawUI, uiAttrMap)
 
 import Control.Concurrent (forkIO, threadDelay)
 import Control.Monad (forever, void)
@@ -18,7 +18,6 @@ import qualified System.Random as R (newStdGen)
 import qualified Graphics.Vty as V
 
 import Brick (BrickEvent (AppEvent, VtyEvent), EventM, Next)
-import Brick.AttrMap (attrMap)
 import Brick.BChan (newBChan, writeBChan)
 import Brick.Main (App (..), continue, customMain, halt, neverShowCursor)
 
@@ -90,7 +89,7 @@ app =
   App
     { appDraw = drawUI
     , appHandleEvent = handleEvent
-    , appAttrMap = const $ attrMap V.defAttr []
+    , appAttrMap = const uiAttrMap
     , appStartEvent = return
     , appChooseCursor = neverShowCursor
     }

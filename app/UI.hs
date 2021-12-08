@@ -1,82 +1,143 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module UI
   ( drawUI
+  , uiAttrMap
   )
 where
 
 import Rockto.Config (appName)
-import Rockto.Types
-import Rockto.Utils
+import Rockto.Types (GSt (..), Map (getMap), Tile (..))
 
-import qualified Data.List as L
-
-import Control.Monad (forever, void)
 import qualified Graphics.Vty as V
 
-import Brick (Padding (..), Widget, emptyWidget, padAll, padLeft, padRight, padTop, str, vBox,
-              withBorderStyle, (<+>), (<=>))
+import Brick (Padding (Pad), Widget, fg)
+import Brick.AttrMap (AttrMap, AttrName, attrMap)
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 import qualified Brick.Widgets.Border.Style as BorderS
 import Brick.Widgets.Center (center)
+import Brick.Widgets.Core (emptyWidget, hBox, padTop, str, vBox, withAttr, withBorderStyle, (<+>),
+                           (<=>))
 
 drawUI :: GSt -> [Widget ()]
 drawUI st = [ui]
   where
     ui = withBorderStyle unicode $
          borderWithLabel (str appName)
-         (vBox[drawGame (st)
-                      , padTop (Pad 2) $ drawGameOver (_dead st)
-                      ]
-           <+> vBorder
-           <+> (drawScore (st)
-           <=> hBorder
-           <=> drawUsage (st)))
+         (vBox [drawGame st, padTop (Pad 2) $ drawGameOver (_dead st)]
+          <=> hBorder
+          <=> drawScore st)
 
 drawScore :: GSt -> Widget ()
-drawScore st =
-    withBorderStyle BorderS.unicodeBold
-          $ borderWithLabel (str "Score")
-          $ center
-          $ str $ "Round: " ++ (show . _round $ st)
-                                ++ "\nTarget: " ++ (show . _target $ st)
-                                ++ "\nPos: " ++ (show . _pos $ st)
-                                ++ "\nDead: " ++ (show . _dead $ st)
-                                ++ "\nDropping: " ++ (show . _droppingPositions $ st)
-                                ++ "\nStable: " ++ (show . _stable $ st)
-                                ++ "\nFinish: " ++ (show . _finish $ st)
+drawScore st = str $ "Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show . _target $ st)
 
 drawUsage :: GSt -> Widget ()
 drawUsage st =
-    withBorderStyle BorderS.unicodeBold
-    $ borderWithLabel (str "Usage")
-    $ center
-    $ str $  "\nMove:      ↑ ↓ ← →"
-          ++ "\nRestart:   1 / r"
-          ++ "\nQuit:      Esc / q"
-          ++ "\nNew Game:  2 / s"
+  withBorderStyle BorderS.unicodeBold
+  $ borderWithLabel (str "Usage")
+  $ center wUsage
 
 drawGame :: GSt  -> Widget()
 drawGame st =
   if _dead st
-     then emptyWidget
-     else center (str $ L.intercalate "\n" (map unwords (getMapRepr st)))
+    then emptyWidget
+    else withBorderStyle BorderS.unicodeBold $ center $ vBox r
+      where
+        r = [hBox $ cells r | r <- [0..6]]
+        cells y = [if a == x && b == y then showGrid TPlayer else showGrid (getMap (_map st) !! y !! x) | x <- [0..15]]
+        (a, b) = _pos st
+
 
 drawGameOver :: Bool -> Widget()
 drawGameOver dead =
   if dead
-     then center (str "GAME OVER")
-     else emptyWidget
+    then withAttr goAttr $ center wGameOver
+    else emptyWidget
 
-getMapRepr :: GSt  -> [[String]]
-getMapRepr st = setList strList y $ setList (strList !! y) x "λ"
-  where
-    strList = map (map showGrid) (getMap (_map st))
-    (x, y) = _pos st
+showGrid :: Tile -> Widget()
+showGrid TExit     = withAttr exitAttr wExit
+showGrid TWall     = withAttr wallAttr wWall
+showGrid TScaffold = withAttr scaffoldAttr wScaffold
+showGrid TParcel   = withAttr parcelAttr wParcel
+showGrid TBrick    = withAttr brickAttr wBrick
+showGrid TPlayer   = withAttr playerAttr wPlayer
+showGrid TEmpty    = withAttr emptyAttr wEmpty
 
-showGrid :: Tile -> String
-showGrid TBrick    = "●"
-showGrid TParcel   = "○"
-showGrid TWall     = "■"
-showGrid TScaffold = "□"
-showGrid TExit     = "△"
-showGrid TEmpty    = " "
+goAttr :: AttrName
+goAttr = "over"
+
+exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, brickAttr, playerAttr :: AttrName
+exitAttr  = "exit"
+wallAttr = "wall"
+scaffoldAttr = "scaffold"
+parcelAttr = "parcel"
+brickAttr = "brick"
+emptyAttr = "empty"
+playerAttr = "player"
+
+uiAttrMap :: AttrMap
+uiAttrMap = attrMap V.defAttr
+  [ (goAttr, fg V.red)
+  ]
+
+wUsage    :: Widget ()
+wUsage    = str $ "\nMove:      ↑ ↓ ← →"
+               ++ "\nRestart:   1 / r"
+               ++ "\nQuit:      Esc / q"
+               ++ "\nNew Game:  2 / s"
+
+wGameOver :: Widget ()
+wGameOver = str $ "\n  █████▀██████████████████████████████████████████████"
+               ++ "\n  █─▄▄▄▄██▀▄─██▄─▀█▀─▄█▄─▄▄─███─▄▄─█▄─█─▄█▄─▄▄─█▄─▄▄▀█"
+               ++ "\n  █─██▄─██─▀─███─█▄█─███─▄█▀███─██─██▄▀▄███─▄█▀██─▄─▄█"
+               ++ "\n  ▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▄▄▄▄▀▀▀▄▀▀▀▄▄▄▄▄▀▄▄▀▄▄▀"
+               ++ "\n              Press 2 to restart                      "
+
+wExit     :: Widget ()
+wExit     = str $ "\n░░░░░░░░░░"
+               ++ "\n░░██████░░"
+               ++ "\n░░█░░░░░░░"
+               ++ "\n░░██████░░"
+               ++ "\n░░░░░░░░░░"
+
+wWall     :: Widget ()
+wWall     = str $ "\n─────────█"
+               ++ "\n█▄█▄█▄█▄█▐"
+               ++ "\n███┼█████▐"
+               ++ "\n█████████▐"
+
+wParcel   :: Widget ()
+wParcel   = str $ "\n░░█████╗░░"
+               ++ "\n░██╔══██╗░"
+               ++ "\n░███████║░"
+               ++ "\n░██║░░██║░"
+               ++ "\n░╚█████╔╝░"
+
+wBrick    :: Widget ()
+wBrick    = str $ "\n░░█████╗░░"
+               ++ "\n░███████╗░"
+               ++ "\n░███████║░"
+               ++ "\n░███████║░"
+               ++ "\n░╚█████╔╝░"
+
+wScaffold :: Widget ()
+wScaffold = str $ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+               ++ "\n░░░░░░░░░░"
+
+wPlayer   :: Widget ()
+wPlayer   = str $ "\n────██────"
+               ++ "\n──▄▀█▄▄▄──"
+               ++ "\n▄▀──█▄▄───"
+               ++ "\n─▄▄▄▀──▀▄─"
+               ++ "\n─▀───────▀"
+
+wEmpty    :: Widget()
+wEmpty    = str $ "\n          "
+               ++ "\n          "
+               ++ "\n          "
+               ++ "\n          "
+               ++ "\n          "

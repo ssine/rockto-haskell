@@ -13,6 +13,7 @@ data Tile
   | TScaffold           -- Supports bricks and parcels above
   | TExit               -- Exit
   | TEmpty              -- Nothing there
+  | TPlayer             -- No place but UI can use it
   deriving (Eq, Ord, Enum, Show)
 
 -- not sure any other necessary attributes?
