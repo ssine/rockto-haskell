@@ -20,6 +20,9 @@ newtype Map
   = Map { getMap :: [[Tile]]
         } deriving (Show)
 
+instance Eq Map where
+    x == y = getMap x == getMap y
+
 --------------------------------------------------------------------------------
 -- | Global State
 --------------------------------------------------------------------------------
@@ -35,6 +38,16 @@ data GSt
         , _finish            :: Bool            -- game status: pass current round
         , _pos               :: (Int, Int)      -- player position
         } deriving (Show)
+
+instance Eq GSt where
+    x == y = _map x == _map y
+          && _droppingPositions x == _droppingPositions y
+          && _target x == _target y
+          && _round x == _round y
+          && _dead x == _dead y
+          && _stable x == _stable y
+          && _finish x == _finish y
+          && _pos x == _pos y
 
 --------------------------------------------------------------------------------
 -- | Direction of Movement
