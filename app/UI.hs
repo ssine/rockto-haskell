@@ -30,13 +30,7 @@ drawUI st = [ui]
           <=> drawScore st)
 
 drawScore :: GSt -> Widget ()
-drawScore st = str $ "Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show . _target $ st)
-
-drawUsage :: GSt -> Widget ()
-drawUsage st =
-  withBorderStyle BorderS.unicodeBold
-  $ borderWithLabel (str "Usage")
-  $ center wUsage
+drawScore st = withAttr scoreAttr (scboard st)
 
 drawGame :: GSt  -> Widget()
 drawGame st =
@@ -67,7 +61,7 @@ showGrid TEmpty    = withAttr emptyAttr wEmpty
 goAttr :: AttrName
 goAttr = "over"
 
-exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, brickAttr, playerAttr :: AttrName
+exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, brickAttr, playerAttr, scoreAttr :: AttrName
 exitAttr  = "exit"
 wallAttr = "wall"
 scaffoldAttr = "scaffold"
@@ -75,24 +69,28 @@ parcelAttr = "parcel"
 brickAttr = "brick"
 emptyAttr = "empty"
 playerAttr = "player"
+scoreAttr = "score"
 
 uiAttrMap :: AttrMap
 uiAttrMap = attrMap V.defAttr
-  [ (goAttr, fg V.red)
+  [ (goAttr, fg V.red),
+    (scoreAttr, fg V.green `V.withStyle` V.bold),
+    (parcelAttr, fg V.green)
   ]
 
-wUsage    :: Widget ()
-wUsage    = str $ "\nMove:      ↑ ↓ ← →"
-               ++ "\nRestart:   1 / r"
-               ++ "\nQuit:      Esc / q"
-               ++ "\nNew Game:  2 / s"
+scboard    :: GSt -> Widget ()
+scboard st = str $ "Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show . _target $ st)
+               ++ "                          Move:↑ ↓ ← →"
+               ++ " Restart: 1 / r"
+               ++ " Quit:Esc / q"
+               ++ " New Game:2 / s"
 
 wGameOver :: Widget ()
 wGameOver = str $ "\n  █████▀██████████████████████████████████████████████"
                ++ "\n  █─▄▄▄▄██▀▄─██▄─▀█▀─▄█▄─▄▄─███─▄▄─█▄─█─▄█▄─▄▄─█▄─▄▄▀█"
                ++ "\n  █─██▄─██─▀─███─█▄█─███─▄█▀███─██─██▄▀▄███─▄█▀██─▄─▄█"
                ++ "\n  ▀▄▄▄▄▄▀▄▄▀▄▄▀▄▄▄▀▄▄▄▀▄▄▄▄▄▀▀▀▄▄▄▄▀▀▀▄▀▀▀▄▄▄▄▄▀▄▄▀▄▄▀"
-               ++ "\n              Press 2 to restart                      "
+               ++ "\n              Press 1 to restart                      "
 
 wExit     :: Widget ()
 wExit     = str $ "\n░░░░░░░░░░"
