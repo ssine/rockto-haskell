@@ -81,10 +81,10 @@ uiAttrMap = attrMap V.defAttr
 scboard    :: GSt -> Widget ()
 scboard st = str ("Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show . _target $ st))
          <+> str (replicate 20 ' ')
-         <+> str ("    Move:↑ ↓ ← →"
+         <+> str ("    Move: ↑ ↓ ← →"
                ++ "    Restart: 1 / r"
-               ++ "    Quit:Esc / q"
-               ++ "    New Game:2 / s")
+               ++ "    Quit: Esc / q"
+               ++ "    New Game: 2 / s")
 
 wGameOver :: Widget ()
 wGameOver = str $ "\n  █████▀██████████████████████████████████████████████"
