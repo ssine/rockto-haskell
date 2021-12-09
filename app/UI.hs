@@ -16,7 +16,7 @@ import Brick.AttrMap (AttrMap, AttrName, attrMap)
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
 import qualified Brick.Widgets.Border.Style as BorderS
-import Brick.Widgets.Center (center)
+import Brick.Widgets.Center (center, hCenter)
 import Brick.Widgets.Core (emptyWidget, hBox, padTop, str, vBox, withAttr, withBorderStyle, (<+>),
                            (<=>))
 
@@ -30,7 +30,7 @@ drawUI st = [ui]
           <=> drawScore st)
 
 drawScore :: GSt -> Widget ()
-drawScore st = withAttr scoreAttr (scboard st)
+drawScore st = withAttr scoreAttr (hCenter . scboard $ st)
 
 drawGame :: GSt  -> Widget()
 drawGame st =
@@ -79,11 +79,12 @@ uiAttrMap = attrMap V.defAttr
   ]
 
 scboard    :: GSt -> Widget ()
-scboard st = str $ "Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show . _target $ st)
-               ++ "                          Move:↑ ↓ ← →"
-               ++ " Restart: 1 / r"
-               ++ " Quit:Esc / q"
-               ++ " New Game:2 / s"
+scboard st = str ("Round: " ++ (show . _round $ st) ++ "  Target: " ++ (show . _target $ st))
+         <+> str (replicate 20 ' ')
+         <+> str ("    Move:↑ ↓ ← →"
+               ++ "    Restart: 1 / r"
+               ++ "    Quit:Esc / q"
+               ++ "    New Game:2 / s")
 
 wGameOver :: Widget ()
 wGameOver = str $ "\n  █████▀██████████████████████████████████████████████"

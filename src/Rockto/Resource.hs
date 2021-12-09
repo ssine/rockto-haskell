@@ -9,13 +9,13 @@ import System.IO (hFlush, stdout)
 loadMap :: FilePath -> IO (Map, (Int, Int))
 loadMap filename = do
   contents <- readFile filename
-  let alineofMap = (lines contents) !! 0
+  let alineofMap = head (lines contents)
       width_of_Map = length alineofMap
       mapcontents = concat (lines contents)
       list_of_Tile = parseMapString mapcontents
       mymap = splitEvery width_of_Map list_of_Tile
       (x, y) = findPos 's' mapcontents width_of_Map
-  return $ (Map mymap, (x, y))
+  return (Map mymap, (x, y))
 
 findPos :: Char -> [Char] -> Int -> (Int, Int)
 findPos c str width = (rem, ans)
@@ -49,7 +49,7 @@ countParcel listTile t = length $ filter (== t) listTile
 
 splitEvery :: Int -> [a] -> [[a]]
 splitEvery _ [] = []
-splitEvery n list = first : (splitEvery n rest)
+splitEvery n list = first : splitEvery n rest
   where
     (first, rest) = splitAt n list
 
@@ -62,6 +62,7 @@ charToTile ch
   | ch == 'c' = TExit
   | ch == ' ' = TEmpty
   | ch == 's' = TEmpty
+  | otherwise = TEmpty
 
 parseMapString :: [Char] -> [Tile]
-parseMapString str = map charToTile str
+parseMapString = map charToTile
