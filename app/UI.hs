@@ -19,7 +19,9 @@ import qualified Brick.Widgets.Border.Style as BorderS
 import Brick.Widgets.Center (center, hCenter)
 import Brick.Widgets.Core (emptyWidget, hBox, padTop, str, vBox, withAttr, withBorderStyle, (<+>),
                            (<=>))
-
+--------------------------------------------------------------------------------
+-- | Game UI Rendering
+--------------------------------------------------------------------------------
 drawUI :: GSt -> [Widget ()]
 drawUI st = [ui]
   where
@@ -28,10 +30,11 @@ drawUI st = [ui]
          (vBox [drawGame st, padTop (Pad 2) $ drawGameOver (_dead st)]
           <=> hBorder
           <=> drawScore st)
-
+-- Score Board
 drawScore :: GSt -> Widget ()
 drawScore st = withAttr scoreAttr (hCenter . scboard $ st)
 
+-- Game Cell
 drawGame :: GSt  -> Widget()
 drawGame st =
   if _dead st
@@ -42,13 +45,14 @@ drawGame st =
         cells y = [if a == x && b == y then showGrid TPlayer else showGrid (getMap (_map st) !! y !! x) | x <- [0..15]]
         (a, b) = _pos st
 
-
+-- Game Over
 drawGameOver :: Bool -> Widget()
 drawGameOver dead =
   if dead
     then withAttr goAttr $ center wGameOver
     else emptyWidget
 
+-- Wideget Style Setting
 showGrid :: Tile -> Widget()
 showGrid TExit     = withAttr exitAttr wExit
 showGrid TWall     = withAttr wallAttr wWall
@@ -94,11 +98,12 @@ wGameOver = str $ "\n  █████▀█████████████
                ++ "\n              Press 1 to restart                      "
 
 wExit     :: Widget ()
-wExit     = str $ "\n ⣿⠉⠉⠉⠉⠉⠉⣿ "
-               ++ "\n ⣿      ⣿ "
-               ++ "\n ⣿   ⢸⣿⣿⣿ "
-               ++ "\n ⣿      ⣿ "
-               ++ "\n ⣿⣀⣀⣀⣀⣀⣀⣿ "
+wExit     = str $ "\n░░█▀▀▀▀▀█░░"
+              ++  "\n░░█░░░░░█░░"
+              ++  "\n░░█░░░█░█░░"
+              ++  "\n░░█░░░░░█░░"
+              ++  "\n░░█▄▄▄▄▄█░░"
+
 
 wWall     :: Widget ()
 wWall     = str $ "\n─────────█"
@@ -116,7 +121,7 @@ wParcel   = str $ "\n ⠠█████╗⠠ "
 wBrick    :: Widget ()
 wBrick    = str $ "\n ⠠█████╗ ⠠"
                ++ "\n ███████╗ "
-               ++ "\n ███████║ "
+               ++ "\n█████████ "
                ++ "\n ███████║ "
                ++ "\n ╚█████╔╝ "
 
@@ -128,13 +133,11 @@ wScaffold = str $ "\n⠿ ⠿ ⠿ ⠿ ⠿ "
                ++ "\n⠿ ⠿ ⠿ ⠿ ⠿ "
 
 wPlayer   :: Widget ()
-wPlayer   = str $ "\n   ◟◟◞◞   "
-               ++ "\n  (´ ∀`)  "
-               ++ "\n  ╰ ▒▒ ╯  "
-               ++ "\n    ╜╙    "
-               ++ "\n          "
-
-                   
+wPlayer   = str $ "\n    ██    "
+               ++ "\n  ▄▀█▄▄▄  "
+               ++ "\n▄▀  █▄▄   "
+               ++ "\n ▄▄▄▀  ▀▄ "
+               ++ "\n ▀       ▀"
 
 wEmpty    :: Widget()
 wEmpty    = str $ "\n          "
