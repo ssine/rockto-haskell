@@ -7,6 +7,7 @@ import Rockto.Types
 import System.IO (hFlush, stdout)
 
 loadMap :: FilePath -> IO (Map, (Int, Int))
+-- Load a Map and the starting position from a filepath
 loadMap filename = do
   contents <- readFile filename
   let alineofMap = head (lines contents)
@@ -18,6 +19,7 @@ loadMap filename = do
   return (Map mymap, (x, y))
 
 findPos :: Char -> [Char] -> Int -> (Int, Int)
+-- find a char's position in a concated char matrix with specific width 
 findPos c str width = (rem, ans)
   where
     index = fromJust (elemIndex c str)
@@ -25,6 +27,8 @@ findPos c str width = (rem, ans)
     rem = index `mod` width
 
 loadGame :: Int -> IO Game
+-- Load a specific game round, including the starting position of the game, 
+-- the game map, and the number of targets
 loadGame round = do
   mapInfo <- loadMap $ getFileName round
   let gameMap = fst mapInfo
@@ -39,21 +43,26 @@ loadGame round = do
       }
 
 getFileName :: Int -> FilePath
+-- get file name of specified game round
 getFileName a = "resources/round_0" ++ show a ++ ".txt"
 
 countTarget :: Map -> Int
+-- count target number of a  map
 countTarget gameMap = countParcel (concat (getMap gameMap)) TParcel
 
 countParcel :: [Tile] -> Tile -> Int
+-- count parcel number of a list of Tile
 countParcel listTile t = length $ filter (== t) listTile
 
 splitEvery :: Int -> [a] -> [[a]]
+-- Split a list into smaller lists of a specific length
 splitEvery _ [] = []
 splitEvery n list = first : splitEvery n rest
   where
     (first, rest) = splitAt n list
 
 charToTile :: Char -> Tile
+-- Convert a Char to a Tile
 charToTile ch
   | ch == 'o' = TBrick
   | ch == 'p' = TParcel
@@ -65,4 +74,5 @@ charToTile ch
   | otherwise = TEmpty
 
 parseMapString :: [Char] -> [Tile]
+-- parse a [Char] to a [Tile], which is a Map
 parseMapString = map charToTile
