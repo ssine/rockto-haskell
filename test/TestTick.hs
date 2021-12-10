@@ -43,4 +43,4 @@ spec_tick = describe "Rockto.Resource" $ do
 
   it "tick with nothing happens"
     $          tick DNull (head testStates)
-    `shouldBe` (head testStates)
+    `shouldBe` head testStates

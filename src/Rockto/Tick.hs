@@ -9,7 +9,7 @@ tick :: Direction -> GSt -> GSt
 -- boundary condition
 tick DNull state@GSt{_stable = True} = state
 
--- steady player, tick time (check for unsupported brick & parcels, player hit detection)
+-- steady player, tick time (check for unsupported rocks & parcels, player hit detection)
 tick DNull state
   | null dropPositions && null (_droppingPositions state) = state {_stable = True}
   | otherwise =
@@ -41,15 +41,15 @@ tick direction state@GSt{_stable = False} = state
 -- update player only
 tick direction state
   | nextTile == TWall = state
-  | direction `elem` [DLeft, DRight] && nextTile == TBrick && nextTile2 == TEmpty =
-      let newMap = setTile (setTile (_map state) nextPos TEmpty) nextPos2 TBrick
+  | direction `elem` [DLeft, DRight] && nextTile == TRock && nextTile2 == TEmpty =
+      let newMap = setTile (setTile (_map state) nextPos TEmpty) nextPos2 TRock
       in
         state {
           _map = newMap,
           _stable = null $ getDropPositions newMap nextPos,
           _pos = nextPos
         }
-  | nextTile == TBrick = state
+  | nextTile == TRock = state
   | nextTile `elem` [TScaffold, TEmpty] =
       let newMap = setTile (_map state) nextPos TEmpty
       in
@@ -87,6 +87,6 @@ getDropPositions mp playerPosition =
     [(x, y) |
       x <- [0..lenX],
       y <- [0..lenY],
-      getTile mp (x, y) `elem` [TParcel, TBrick],
+      getTile mp (x, y) `elem` [TParcel, TRock],
       let downPosition = stepPos DDown (x, y)
       in getTile mp downPosition == TEmpty && downPosition /= playerPosition ]
