@@ -1,7 +1,4 @@
-module Rockto.Tick
-  ( tick
-  )
-where
+module Rockto.Tick where
 
 import Rockto.Types
 import Rockto.Utils
