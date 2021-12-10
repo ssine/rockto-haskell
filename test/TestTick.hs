@@ -6,8 +6,8 @@ where
 
 import Test.Hspec
 
-import Rockto.Types
 import Rockto.Tick
+import Rockto.Types
 
 testMaps :: [Map]
 testMaps = [
