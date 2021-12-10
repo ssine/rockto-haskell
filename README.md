@@ -26,9 +26,17 @@ Game rules:
 
 # Getting Started
 
+Try it in docker:
+
+```bash
+docker run -it sineliu/rockto
 ```
-$ make build
-$ make run
+
+or build it locally:
+
+```bash
+make build
+make run
 ```
 
 # Milestone
