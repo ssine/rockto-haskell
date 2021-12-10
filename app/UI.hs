@@ -58,19 +58,19 @@ showGrid TExit     = withAttr exitAttr wExit
 showGrid TWall     = withAttr wallAttr wWall
 showGrid TScaffold = withAttr scaffoldAttr wScaffold
 showGrid TParcel   = withAttr parcelAttr wParcel
-showGrid TBrick    = withAttr brickAttr wBrick
+showGrid TRock     = withAttr rockAttr wRock
 showGrid TPlayer   = withAttr playerAttr wPlayer
 showGrid TEmpty    = withAttr emptyAttr wEmpty
 
 goAttr :: AttrName
 goAttr = "over"
 
-exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, brickAttr, playerAttr, scoreAttr :: AttrName
+exitAttr, wallAttr, emptyAttr, scaffoldAttr, parcelAttr, rockAttr, playerAttr, scoreAttr :: AttrName
 exitAttr  = "exit"
 wallAttr = "wall"
 scaffoldAttr = "scaffold"
 parcelAttr = "parcel"
-brickAttr = "brick"
+rockAttr = "rock"
 emptyAttr = "empty"
 playerAttr = "player"
 scoreAttr = "score"
@@ -112,14 +112,14 @@ wWall     = str $ "\n─────────█"
                ++ "\n█████████▐"
 
 wParcel   :: Widget ()
-wParcel   = str $ "\n ⠠█████╗⠠ "
+wParcel   = str $ "\n  █████╗  "
                ++ "\n ██╔══██╗ "
                ++ "\n ███████║ "
                ++ "\n ██║  ██║ "
                ++ "\n ╚█████╔╝ "
 
-wBrick    :: Widget ()
-wBrick    = str $ "\n ⠠█████╗ ⠠"
+wRock     :: Widget ()
+wRock     = str $ "\n  █████╗  "
                ++ "\n ███████╗ "
                ++ "\n█████████ "
                ++ "\n ███████║ "

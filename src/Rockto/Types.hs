@@ -7,10 +7,10 @@ import qualified System.Random as R (StdGen)
 --------------------------------------------------------------------------------
 
 data Tile
-  = TBrick              -- Brick
+  = TRock               -- Rock
   | TParcel             -- Parcel
   | TWall               -- Wall
-  | TScaffold           -- Supports bricks and parcels above
+  | TScaffold           -- Supports rocks and parcels above
   | TExit               -- Exit
   | TEmpty              -- Nothing there
   | TPlayer             -- No place but UI can use it

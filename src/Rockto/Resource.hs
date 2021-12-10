@@ -19,7 +19,7 @@ loadMap filename = do
   return (Map mymap, (x, y))
 
 findPos :: Char -> [Char] -> Int -> (Int, Int)
--- find a char's position in a concated char matrix with specific width 
+-- find a char's position in a concated char matrix with specific width
 findPos c str width = (rem, ans)
   where
     index = fromJust (elemIndex c str)
@@ -27,7 +27,7 @@ findPos c str width = (rem, ans)
     rem = index `mod` width
 
 loadGame :: Int -> IO Game
--- Load a specific game round, including the starting position of the game, 
+-- Load a specific game round, including the starting position of the game,
 -- the game map, and the number of targets
 loadGame round = do
   mapInfo <- loadMap $ getFileName round
@@ -64,7 +64,7 @@ splitEvery n list = first : splitEvery n rest
 charToTile :: Char -> Tile
 -- Convert a Char to a Tile
 charToTile ch
-  | ch == 'o' = TBrick
+  | ch == 'o' = TRock
   | ch == 'p' = TParcel
   | ch == 'x' = TWall
   | ch == '-' = TScaffold

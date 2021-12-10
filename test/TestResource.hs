@@ -4,6 +4,7 @@ module TestResource
 where
 
 import Test.Hspec
+
 import Rockto.Resource
 import Rockto.Types
 import Rockto.Utils (demoMap)
@@ -13,18 +14,18 @@ spec_resource = describe "Rockto.Resource" $ do
 
   it "get file name of specified game round"
     $          getFileName 1
-    `shouldBe` "resources/round_01.txt"   
+    `shouldBe` "resources/round_01.txt"
 
   it "parse a string to a map"
     $          parseMapString "opx-c s"
-    `shouldBe`   [TBrick,TParcel,TWall,TScaffold,TExit,TEmpty,TEmpty]
+    `shouldBe`   [TRock,TParcel,TWall,TScaffold,TExit,TEmpty,TEmpty]
 
   it "count target number of a  map"
     $          countTarget demoMap
     `shouldBe`   4
 
   it "count parcel number of a list of Tile"
-    $          countParcel [TBrick,TParcel,TWall,TScaffold,TExit,TEmpty,TEmpty] TParcel
+    $          countParcel [TRock,TParcel,TWall,TScaffold,TExit,TEmpty,TEmpty] TParcel
     `shouldBe`   1
 
   it "Split a list into smaller lists of a specific length "
@@ -33,7 +34,7 @@ spec_resource = describe "Rockto.Resource" $ do
 
   it "Convert a Char to a Tile "
     $          charToTile 'o'
-    `shouldBe`   TBrick
+    `shouldBe`   TRock
 
   it "Convert a Char to a Tile "
     $          charToTile 'p'

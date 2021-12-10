@@ -39,11 +39,11 @@ spec_utils = describe "Util" $ do
     `shouldBe` 7
 
   it "get tile"
-    $          getTile (testMaps!!0) (0, 0)
+    $          getTile (head testMaps) (0, 0)
     `shouldBe` TParcel
 
   it "set tile"
-    $          setTile (testMaps!!0) (0, 0) TWall
+    $          setTile (head testMaps) (0, 0) TWall
     `shouldBe` (testMaps!!1)
 
   it "step position up"
